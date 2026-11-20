@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Facilitador — Café con Propósito</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════
+   CAFÉ CON PROPÓSITO · PANEL FACILITADOR
+   Soy Integral · Azul Noche + Dorado Cálido
+═══════════════════════════════════════════════════════ */
+:root{
+  --azul:    #0D1F3C;
+  --azul-mid:#152B52;
+  --azul-lt: #1E3A6B;
+  --azul-bg: #F0F4FA;
+  --gold:    #C4973B;
+  --gold-lt: #E8C07A;
+  --gold-pale:#FBF6EC;
+  --ink:     #0D1F3C;
+  --muted:   #5A7090;
+  --border:  #C8D6E8;
+  --white:   #FFFFFF;
+  --red:     #B94040;
+  --green:   #2D6A4F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Calibri',sans-serif;background:var(--azul-bg);color:var(--ink);font-size:14px}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--azul);display:flex;align-items:stretch;border-bottom:3px solid var(--gold)}
+.tb-accent{width:4px;background:var(--gold);flex-shrink:0}
+.tb-logo{padding:0 18px;display:flex;align-items:center}
+.tb-logo svg{width:28px;height:28px;fill:var(--gold)}
+.tb-text{padding:13px 0 13px 4px;flex:1}
+.tb-text h1{font-size:14px;font-weight:700;color:#fff;letter-spacing:2.5px;text-transform:uppercase}
+.tb-text p{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
+.tb-right{padding:13px 20px;display:flex;align-items:center;gap:10px}
+.badge-role{background:var(--gold);color:var(--azul);font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
+.badge-si{background:transparent;border:1px solid rgba(196,151,59,.4);color:var(--gold);font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+
+/* ── TABS ── */
+.tabs{background:var(--azul-mid);display:flex;gap:0;overflow-x:auto;border-bottom:2px solid var(--gold)}
+.tab{padding:11px 22px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:transparent;text-transform:uppercase;letter-spacing:1.2px;white-space:nowrap;transition:.15s;font-family:inherit;display:flex;align-items:center;gap:7px}
+.tab svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+.tab:hover{color:var(--gold-lt)}
+.tab.active{color:#fff;background:var(--azul);border-bottom:2px solid var(--gold);margin-bottom:-2px}
+
+/* ── LAYOUT ── */
+.app{max-width:1100px;margin:0 auto;padding:24px 16px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(13,31,60,.06)}
+
+/* ── SECTION TITLES ── */
+.sec-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--azul-lt);font-weight:700;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:8px;display:flex;align-items:center;gap:8px}
+.sec-title svg{width:14px;height:14px;fill:var(--gold);flex-shrink:0}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;border-top:3px solid var(--gold)}
+.stat-num{font-size:32px;font-weight:700;color:var(--gold)}
+.stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:4px}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;margin-bottom:16px}
+th{background:var(--azul);color:#fff;padding:10px 12px;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:hover td{background:var(--azul-bg)}
+tr:nth-child(even) td{background:#F7FAFD}
+
+/* ── BUTTONS ── */
+.action-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:6px 12px;font-size:11px;color:var(--muted);cursor:pointer;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-weight:600}
+.action-btn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
+.action-btn:hover{border-color:var(--azul-lt);color:var(--azul);background:var(--azul-bg)}
+.action-btn.primary{background:var(--gold);color:var(--azul);font-weight:700;border:none;padding:9px 20px;font-size:13px;letter-spacing:.3px}
+.action-btn.primary:hover{background:var(--gold-lt)}
+.action-btn.danger{border-color:#E57373;color:var(--red)}
+.action-btn.danger:hover{background:#FFEBEE;border-color:var(--red)}
+
+/* ── ELEM CARDS (stats) ── */
+.elem-badge{display:inline-flex;align-items:center;gap:5px;font-weight:700}
+.elem-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.elem-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;align-items:center;gap:12px}
+.elem-icon{width:38px;display:flex;align-items:center;justify-content:center;color:var(--gold)}
+.elem-name{font-size:12px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.5px}
+.elem-sub{font-size:11px;color:var(--muted)}
+.elem-count{font-size:24px;font-weight:700;color:var(--gold);margin-left:auto}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty svg{width:48px;height:48px;fill:var(--border);margin-bottom:12px;display:block;margin-left:auto;margin-right:auto}
+
+/* ── ELEMENT SELECTOR ── */
+.elem-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.eb{flex:1;min-width:90px;padding:12px 6px;border:2px solid var(--border);border-radius:8px;background:#fff;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:.15s;font-family:inherit}
+.eb:hover{border-color:var(--gold);color:var(--azul)}
+.eb.activo{border-color:var(--azul);background:var(--azul);color:#fff}
+
+/* ── FORM ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-field{margin-bottom:12px}
+.form-field label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.form-field label svg{width:12px;height:12px;fill:var(--gold);flex-shrink:0}
+.form-field input{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff}
+.form-field input:focus{outline:none;border-color:var(--azul-lt);box-shadow:0 0 0 3px rgba(30,58,107,.12)}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.score-item{text-align:center}
+.score-item label{display:block;font-size:19px;margin-bottom:4px;justify-content:center}
+.score-item .slbl{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.score-item input{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:16px;font-weight:700;text-align:center;color:var(--gold);font-family:inherit}
+
+/* ── MESSAGES ── */
+.msg{padding:10px 14px;border-radius:6px;font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.msg svg{width:16px;height:16px;fill:currentColor;flex-shrink:0}
+.msg.ok{background:#EAF7EE;color:var(--green);border:1px solid #A5D6A7}
+.msg.err{background:#FFEBEE;color:var(--red);border:1px solid #EF9A9A}
+.msg.warn{background:#FFF8E1;color:#955500;border:1px solid #FFE082}
+
+/* ── INFORME PANEL ── */
+.plan-controls{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.plan-select{border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-size:13px;background:#fff;color:var(--ink);font-family:inherit;min-width:240px}
+.informe-page{background:#fff;max-width:780px;margin:0 auto;padding:0;border:1px solid #D0D8E4;border-radius:4px;overflow:hidden;font-family:'Segoe UI','Calibri',sans-serif}
+
+/* Informe: header ejecutivo */
+.inf-topbar{background:var(--azul);padding:28px 36px;display:flex;align-items:flex-start;gap:24px;position:relative}
+.inf-topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C4973B 0%,#E8C07A 50%,#C4973B 100%)}
+.inf-logo{width:44px;height:44px;fill:#fff;flex-shrink:0;opacity:.9}
+.inf-meta{flex:1}
+.inf-brand{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.inf-nombre{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.inf-cargo{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
+.inf-fecha{font-size:10px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.5px}
+.inf-elemento-hero{text-align:right;min-width:100px}
+.inf-el-emoji{display:flex;justify-content:flex-end;color:rgba(255,255,255,.35)}
+.inf-el-name{font-size:12px;font-weight:700;color:rgba(255,255,255,.8);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+.inf-el-tipo{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.5px}
+
+/* Informe: body */
+.inf-body{padding:28px 36px}
+
+/* Informe: sections */
+.inf-sec{margin-bottom:28px}
+.inf-sec-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--azul);font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.inf-sec-title svg{width:13px;height:13px;fill:var(--azul);flex-shrink:0;opacity:.7}
+.inf-sec-title::after{content:'';flex:1;height:1px;background:#D8E2EE}
+
+/* Puntajes */
+.pscore-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pscore-icon{width:20px;display:flex;align-items:center;color:var(--azul);opacity:.5}
+.pscore-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--azul);width:110px;flex-shrink:0}
+.pscore-bar-wrap{flex:1;height:5px;background:#E8EEF5;border-radius:3px;overflow:hidden}
+.pscore-bar{height:100%;background:var(--azul);border-radius:3px}
+.pscore-val{font-size:12px;font-weight:700;color:var(--azul);width:24px;text-align:right;opacity:.8}
+
+/* Texto descriptivo */
+.perfil-desc{background:#F3F6FA;border-left:3px solid var(--azul);border-radius:0 4px 4px 0;padding:14px 16px;font-size:13px;line-height:1.7;color:var(--azul);margin-bottom:16px}
+
+/* Listas */
+.comp-list li{margin-bottom:8px;font-size:13px;line-height:1.55;list-style:none;padding-left:0;display:flex;gap:10px;color:#2A3B52}
+.comp-list li::before{content:'';display:inline-block;width:5px;height:5px;background:var(--azul);border-radius:50%;flex-shrink:0;margin-top:6px;opacity:.6}
+.pot-list li{margin-bottom:9px;font-size:13px;line-height:1.55;list-style:none;padding-left:0;display:flex;gap:10px;color:#2A3B52}
+.pot-list li::before{content:'';display:inline-block;border-left:2px solid var(--azul);height:14px;flex-shrink:0;margin-top:2px;opacity:.5}
+
+/* Tags/chips */
+.inf-chip{display:inline-block;background:#EEF2F8;border:1px solid #D0D8E8;border-radius:3px;padding:4px 10px;font-size:11px;color:var(--azul);font-weight:600;letter-spacing:.3px}
+
+@media print{
+  .topbar,.tabs,.plan-controls,.no-print,.config-section,.tab-panel:not(.print-target){display:none!important}
+  .print-target{display:block!important}
+  .informe-page{max-width:100%;border:none;box-shadow:none;border-radius:0}
+  body{background:#fff}
+  @page{margin:15mm 12mm;size:A4}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-accent"></div>
+  <div class="tb-logo">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 8c0 2.76-2.24 5-5 5s-5-2.24-5-5V5h10v3zm2.5 1H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 9 18.5 9zM4 19h16v2H4v-2z"/></svg>
+  </div>
+  <div class="tb-text">
+    <h1>Café con Propósito</h1>
+    <p id="tb-subtitle">Panel del Facilitador · Café con Propósito</p>
+  </div>
+  <div class="tb-right">
+    <span class="badge-si">Soy Integral</span>
+    <span class="badge-role">Facilitador</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('participantes')">
+    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+    Participantes
+  </button>
+  <button class="tab" onclick="showTab('estadisticas')">
+    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+    Estadísticas
+  </button>
+  <button class="tab" onclick="showTab('informe')">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    Informe Individual
+  </button>
+  <button class="tab" onclick="showTab('colectivo')">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+    Plan Colectivo
+  </button>
+  <button class="tab" onclick="showTab('config')">
+    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    Configuración
+  </button>
+</div>
+
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       TAB 1: PARTICIPANTES + ENTRADA MANUAL
+  ══════════════════════════════════════ -->
+  <div id="tab-participantes" class="tab-panel active">
+
+    <!-- Formulario de entrada manual -->
+    <div class="card">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Agregar Participante</div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Nombre completo *</label>
+          <input type="text" id="m-nombre" placeholder="Ej: María García">
+        </div>
+        <div class="form-field">
+          <label><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.05 15.96 0 13.36 0c-1.3 0-2.51.52-3.36 1.36-.85-.84-2.06-1.36-3.36-1.36C4.04 0 2 2.05 2 4.64c0 .48.1.92.18 1.36H0v14c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>Cargo</label>
+          <input type="text" id="m-cargo" placeholder="Ej: Gerente de Operaciones">
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Elemento Principal * — Toca el elemento del participante</label>
+        <div class="elem-selector">
+          <button class="eb" id="eb-A" onclick="elegirElem('A')"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;vertical-align:middle"><path d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6v-1.95c-.9 0-1.4.25-2 .6zM18.99 9c-1.35 0-2.2.42-2.95.8-.65.34-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V11c-.9 0-1.4-.25-2.01-.6zm0-3.99c-1.35 0-2.2.42-2.95.8-.65.33-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6C11.2 5.42 10.37 5 9 5s-2.2.42-2.95.8C5.4 6.13 4.87 6.4 4 6.4V8.35c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V6.4c-.9 0-1.4-.25-2.01-.59z"/></svg> Agua</button>
+          <button class="eb" id="eb-B" onclick="elegirElem('B')"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;vertical-align:middle"><path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg> Fuego</button>
+          <button class="eb" id="eb-C" onclick="elegirElem('C')"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;vertical-align:middle"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg> Tierra</button>
+          <button class="eb" id="eb-D" onclick="elegirElem('D')"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;vertical-align:middle"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg> Aire</button>
+        </div>
+        <div id="elem-sel-display" style="font-size:12px;color:var(--muted);margin-top:4px;">Ninguno seleccionado</div>
+      </div>
+
+      <div class="form-field">
+        <label><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Puntajes por Elemento (pueden ser negativos — tal como aparecen en el test)</label>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">El puntaje mayor = elemento principal · El menor = elemento opuesto (se calculan automáticamente)</div>
+        <div class="score-grid">
+          <div class="score-item">
+            <label><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--azul)"><path d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6v-1.95c-.9 0-1.4.25-2 .6zM18.99 9c-1.35 0-2.2.42-2.95.8-.65.34-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V11c-.9 0-1.4-.25-2.01-.6zm0-3.99c-1.35 0-2.2.42-2.95.8-.65.33-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6C11.2 5.42 10.37 5 9 5s-2.2.42-2.95.8C5.4 6.13 4.87 6.4 4 6.4V8.35c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V6.4c-.9 0-1.4-.25-2.01-.59z"/></svg></label>
+            <span class="slbl">AGUA</span>
+            <input type="number" id="p-A" min="-20" max="20" value="0" oninput="actualizarOpuesto()">
+          </div>
+          <div class="score-item">
+            <label><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--azul)"><path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg></label>
+            <span class="slbl">FUEGO</span>
+            <input type="number" id="p-B" min="-20" max="20" value="0" oninput="actualizarOpuesto()">
+          </div>
+          <div class="score-item">
+            <label><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--azul)"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg></label>
+            <span class="slbl">TIERRA</span>
+            <input type="number" id="p-C" min="-20" max="20" value="0" oninput="actualizarOpuesto()">
+          </div>
+          <div class="score-item">
+            <label><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--azul)"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg></label>
+            <span class="slbl">AIRE</span>
+            <input type="number" id="p-D" min="-20" max="20" value="0" oninput="actualizarOpuesto()">
+          </div>
+        </div>
+        <div id="opuesto-preview" style="margin-top:10px;font-size:12px;color:var(--muted);background:var(--gold-pale);border:1px solid var(--border);border-radius:6px;padding:8px 12px;display:none"></div>
+      </div>
+
+      <div id="form-msg" style="display:none" class="msg"></div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="action-btn primary" onclick="agregarParticipante()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Agregar Participante</button>
+        <button class="action-btn" onclick="limpiarForm()"><svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>Limpiar</button>
+      </div>
+    </div>
+
+    <!-- Lista de participantes -->
+    <div class="card" id="tabla-card">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Participantes Registrados (<span id="cont-total">0</span>)</div>
+      <div id="tabla-wrap">
+        <div class="empty">
+          <svg viewBox="0 0 24 24"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 8c0 2.76-2.24 5-5 5s-5-2.24-5-5V5h10v3zm2.5 1H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 9 18.5 9zM4 19h16v2H4v-2z"/></svg>
+          <div>Aún no hay participantes</div>
+          <div style="font-size:12px;margin-top:6px;color:var(--muted)">Usa el formulario de arriba para agregar</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <button class="action-btn" onclick="exportarCSV()" id="btn-csv" style="display:none"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Exportar CSV</button>
+      <button class="action-btn danger" onclick="borrarTodo()" id="btn-borrar" style="display:none"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Borrar todos</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 2: ESTADÍSTICAS
+  ══════════════════════════════════════ -->
+  <div id="tab-estadisticas" class="tab-panel">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">Participantes</div></div>
+      <div class="stat-box"><div class="stat-num" id="st-agua">0</div><div class="stat-lbl"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor;vertical-align:middle;margin-right:3px"><path d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6v-1.95c-.9 0-1.4.25-2 .6zM18.99 9c-1.35 0-2.2.42-2.95.8-.65.34-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V11c-.9 0-1.4-.25-2.01-.6zm0-3.99c-1.35 0-2.2.42-2.95.8-.65.33-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6C11.2 5.42 10.37 5 9 5s-2.2.42-2.95.8C5.4 6.13 4.87 6.4 4 6.4V8.35c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V6.4c-.9 0-1.4-.25-2.01-.59z"/></svg>Agua</div></div>
+      <div class="stat-box"><div class="stat-num" id="st-fuego">0</div><div class="stat-lbl"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor;vertical-align:middle;margin-right:3px"><path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>Fuego</div></div>
+      <div class="stat-box"><div class="stat-num" id="st-tierra">0</div><div class="stat-lbl"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor;vertical-align:middle;margin-right:3px"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg>Tierra</div></div>
+    </div>
+    <div class="stats-row" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat-box"><div class="stat-num" id="st-aire">0</div><div class="stat-lbl"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor;vertical-align:middle;margin-right:3px"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg>Aire</div></div>
+      <div class="stat-box">
+        <div class="stat-num" id="st-dom">—</div>
+        <div class="stat-lbl">Elemento dominante</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>Distribución por Elemento</div>
+      <div class="elem-grid" id="dist-elem"></div>
+    </div>
+    <div class="card">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>Dinámica del Equipo</div>
+      <div id="dinam-wrap" style="font-size:13px;line-height:1.7;color:var(--ink)"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 3: INFORME INDIVIDUAL
+  ══════════════════════════════════════ -->
+  <div id="tab-informe" class="tab-panel">
+    <div class="plan-controls no-print">
+      <select class="plan-select" id="sel-informe" onchange="verInforme()">
+        <option value="">— Selecciona un participante —</option>
+      </select>
+      <button class="action-btn primary" onclick="imprimirInforme()"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>Imprimir / PDF</button>
+    </div>
+    <div id="informe-wrap">
+      <div class="empty">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        <div>Selecciona un participante para ver su informe</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 4: PLAN COLECTIVO
+  ══════════════════════════════════════ -->
+  <div id="tab-colectivo" class="tab-panel">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px" class="no-print">
+      <button class="action-btn primary" onclick="imprimirColectivo()" style="gap:8px">
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Descargar PDF
+      </button>
+    </div>
+    <div id="colectivo-wrap">
+      <div class="empty">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        <div>Agrega participantes para ver el plan colectivo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 5: CONFIGURACIÓN DEL TALLER
+  ══════════════════════════════════════ -->
+  <div id="tab-config" class="tab-panel">
+
+    <!-- LINK DEL FACILITADOR -->
+    <div class="card config-section" style="margin-bottom:16px">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>Link del Facilitador</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Comparte este enlace con tu equipo para que accedan al panel del facilitador.</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <input type="text" id="facilitator-link" value="https://gmorenocoach.github.io/taller/" readonly
+          style="flex:1;min-width:220px;font-size:13px;padding:9px 13px;border:1px solid var(--border);border-radius:6px;background:#F7F9FC;color:var(--azul);font-family:monospace">
+        <button class="action-btn primary" onclick="copiarLink()">
+          <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          Copiar link
+        </button>
+        <a href="https://gmorenocoach.github.io/taller/" target="_blank" class="action-btn" style="text-decoration:none">
+          <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+          Abrir
+        </a>
+      </div>
+      <div id="copy-msg" style="display:none;margin-top:8px;font-size:12px;color:var(--green);font-weight:600">✓ Link copiado al portapapeles</div>
+    </div>
+
+    <!-- CONFIGURACIÓN PRINCIPAL -->
+    <div class="card config-section">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>Configuración del Taller</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Estos datos aparecerán en el encabezado de cada informe individual. Se guardan automáticamente en este navegador.</div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label><svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>Empresa cliente (a quién se le hace el taller)</label>
+          <input type="text" id="cfg-empresa" placeholder="Ej: PSC Energy S.A.S." oninput="guardarConfig()">
+        </div>
+        <div class="form-field">
+          <label><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Dirección o ciudad</label>
+          <input type="text" id="cfg-direccion" placeholder="Ej: Chía, Cundinamarca" oninput="guardarConfig()">
+        </div>
+        <div class="form-field">
+          <label><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Responsable de Talento Humano</label>
+          <input type="text" id="cfg-responsable" placeholder="Ej: María González — Gerente de RRHH" oninput="guardarConfig()">
+        </div>
+        <div class="form-field">
+          <label><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Fecha del taller</label>
+          <input type="date" id="cfg-fecha" oninput="guardarConfig();actualizarFechaDisplay()">
+          <div id="fecha-display" style="font-size:12px;color:var(--muted);margin-top:4px"></div>
+        </div>
+        <div class="form-field" style="grid-column:1/-1">
+          <label><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>Nombre del programa / taller</label>
+          <input type="text" id="cfg-programa" placeholder="Ej: RenaSER · Liderazgo Consciente" oninput="guardarConfig()">
+        </div>
+        <div class="form-field" style="grid-column:1/-1">
+          <label><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Correo de contacto</label>
+          <input type="email" id="cfg-email" placeholder="Ej: talentohumano@empresa.com" oninput="guardarConfig()">
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="action-btn primary" onclick="guardarConfig();mostrarMsgConfig('Configuración guardada correctamente','ok')">
+          <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+          Guardar configuración
+        </button>
+        <button class="action-btn" onclick="limpiarConfig()">
+          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          Limpiar
+        </button>
+      </div>
+      <div id="cfg-msg" style="display:none;margin-top:12px" class="msg"></div>
+
+      <div style="margin-top:28px;padding:16px;background:var(--azul-bg);border-radius:8px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px">Vista previa del encabezado del informe</div>
+        <div id="cfg-preview" style="font-size:12px;color:var(--azul);line-height:1.8"></div>
+      </div>
+    </div>
+
+    <!-- QR DE PARTICIPANTES -->
+    <div class="card config-section" style="margin-top:16px">
+      <div class="sec-title"><svg viewBox="0 0 24 24"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-12v8h8V3h-8zm6 6h-4V5h4v4zm-5.99 4h2v2h-2zm2 2h2v2h-2zm2-2h2v2h-2zm-4 4h2v2h-2zm2 2h2v2h-2zm2-2h2v2h-2zm-4-8h2v2h-2zm6 6h2v2h-2z"/></svg>Código QR para Participantes</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px">Muéstrale este QR a los participantes para que accedan al formulario de registro del taller. Incluye el logo de Soy Integral en el centro.</div>
+
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+        <!-- QR Display -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+          <div style="position:relative;display:inline-block">
+            <div id="qr-container" style="width:200px;height:200px;background:#fff;border:8px solid var(--azul);border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center">
+              <div style="font-size:12px;color:var(--muted);text-align:center;padding:16px">Generando QR…</div>
+            </div>
+            <!-- Logo overlay centrado -->
+            <div id="qr-logo-overlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:var(--azul);border-radius:8px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;pointer-events:none">
+              <svg viewBox="0 0 60 60" style="width:32px;height:32px;" fill="none">
+                <path d="M10 30 C10 16 50 16 50 30" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                <path d="M10 30 C10 44 50 44 50 30" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                <path d="M16 30 C16 23 22 21 22 30 C22 39 16 37 16 30" stroke="rgba(255,255,255,0.6)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M44 30 C44 23 38 21 38 30 C38 39 44 37 44 30" stroke="rgba(255,255,255,0.6)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.95)"/>
+              </svg>
+            </div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--azul)">SOY INTEGRAL</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">Café con Propósito</div>
+          </div>
+        </div>
+
+        <!-- Controles del QR -->
+        <div style="flex:1;min-width:220px">
+          <div class="form-field" style="margin-bottom:14px">
+            <label>URL del formulario de participantes</label>
+            <input type="url" id="qr-url" placeholder="https://gmorenocoach.github.io/taller/test_cafe_proposito.html"
+              oninput="regenerarQR()" value="https://gmorenocoach.github.io/taller/test_cafe_proposito.html"
+              style="font-size:13px">
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">URL del test que escanearán los participantes</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="action-btn primary" onclick="imprimirQR()">
+              <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+              Imprimir QR
+            </button>
+            <button class="action-btn" onclick="descargarQR()">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              Descargar
+            </button>
+          </div>
+          <div style="margin-top:14px;padding:12px;background:var(--azul-bg);border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:700;color:var(--azul);margin-bottom:6px">💡 Instrucciones</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.6">1. Proyecta o imprime este QR durante el taller<br>2. Los participantes lo escanean con su celular<br>3. Ingresan su nombre, cargo y contestan el test<br>4. Su informe aparece en su pantalla al terminar<br>5. Los resultados llegan aquí automáticamente ✅</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════
+// DATOS
+// ══════════════════════════════════════
+var participantes = [
+  {nombre:'Melissa Elejande',  cargo:'Dir HSEQ',                elemento:'C', complemento:'B', opuesto:'D', puntajes:{A:-1,B:1,C:3,D:-3},  fecha:'21/10/2026'},
+  {nombre:'Victor Pardo',      cargo:'Gerente General',          elemento:'B', complemento:'A', opuesto:'C', puntajes:{A:1,B:2,C:-3,D:0},   fecha:'21/10/2026'},
+  {nombre:'Jhon Camilo Calderon',cargo:'Contador',               elemento:'C', complemento:'A', opuesto:'B', puntajes:{A:1,B:-3,C:2,D:0},   fecha:'21/10/2026'},
+  {nombre:'Miguel Alvarez',    cargo:'Coordinador de Equipos',   elemento:'C', complemento:'B', opuesto:'D', puntajes:{A:-2,B:2,C:3,D:-3},  fecha:'21/10/2026'},
+  {nombre:'William Castillo',  cargo:'IT Manager',               elemento:'D', complemento:'A', opuesto:'C', puntajes:{A:3,B:-2,C:-5,D:4},  fecha:'21/10/2026'},
+  {nombre:'Alfonso Rosales',   cargo:'Coordinador Licitaciones', elemento:'C', complemento:'A', opuesto:'B', puntajes:{A:0,B:-1,C:1,D:0},   fecha:'21/10/2026'},
+  {nombre:'Liliana Incapie',   cargo:'Dir Administrativa',       elemento:'D', complemento:'B', opuesto:'A', puntajes:{A:-5,B:2,C:0,D:3},   fecha:'21/10/2026'},
+  {nombre:'Ruben Rivas',       cargo:'Talento Humano',           elemento:'A', complemento:'B', opuesto:'D', puntajes:{A:3,B:2,C:0,D:-5},   fecha:'21/10/2026'},
+  {nombre:'Lucia Pardo',       cargo:'Gerente',                  elemento:'D', complemento:'A', opuesto:'C', puntajes:{A:0,B:-1,C:-4,D:5},  fecha:'21/10/2026'},
+  {nombre:'Carlos Villamizar', cargo:'Dir Construcciones',       elemento:'B', complemento:'D', opuesto:'A', puntajes:{A:-3,B:2,C:-1,D:2},  fecha:'21/10/2026'}
+];
+var elemSeleccionado = '';
+
+var ELEM = {
+  A:{emoji:'🌊',nombre:'Agua',tipo:'Fluidez · Conexión · Empatía'},
+  B:{emoji:'🔥',nombre:'Fuego',tipo:'Energía · Visión · Liderazgo'},
+  C:{emoji:'🏔️',nombre:'Tierra',tipo:'Estabilidad · Estructura · Confianza'},
+  D:{emoji:'🌬️',nombre:'Aire',tipo:'Creatividad · Innovación · Adaptación'}
+};
+
+// SVG icons per element — single-ink, Material Design paths
+var ELEM_SVG_PATH = {
+  A:'<path d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6v-1.95c-.9 0-1.4.25-2 .6zM18.99 9c-1.35 0-2.2.42-2.95.8-.65.34-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V11c-.9 0-1.4-.25-2.01-.6zm0-3.99c-1.35 0-2.2.42-2.95.8-.65.33-1.17.6-2.04.6-.9 0-1.4-.25-2.05-.6C11.2 5.42 10.37 5 9 5s-2.2.42-2.95.8C5.4 6.13 4.87 6.4 4 6.4V8.35c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8V6.4c-.9 0-1.4-.25-2.01-.59z"/>',
+  B:'<path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5 0.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>',
+  C:'<path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/>',
+  D:'<path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>'
+};
+
+function elemSVG(k, size){
+  size = size || 18;
+  var path = ELEM_SVG_PATH[k] || '';
+  return '<svg viewBox="0 0 24 24" style="width:'+size+'px;height:'+size+'px;fill:currentColor;flex-shrink:0;vertical-align:middle">'+path+'</svg>';
+}
+function elemLabel(k, size){
+  return '<span style="display:inline-flex;align-items:center;gap:5px">'+elemSVG(k,size)+ELEM[k].nombre+'</span>';
+}
+
+var PERFILES = {
+  A:{
+    titulo:'El Líder Empático · Agua',
+    subtitulo:'Fluyes, contienes y conectas',
+    desc:'Tu liderazgo fluye como el agua: te adaptas con gracia, escuchas profundamente y creas conexiones auténticas con tu equipo. Tienes una capacidad especial para detectar las emociones del grupo antes de que se vuelvan conflicto, y para generar ambientes donde las personas se sienten vistas y valoradas. Eres el pegamento humano del equipo.',
+    fortalezas:['Escucha activa y empatía de alto nivel','Gestión del clima emocional del equipo','Resolución de conflictos desde la comprensión','Creación de vínculos de confianza duraderos','Capacidad para contener la incertidumbre sin paralizarse'],
+    competencias:[
+      'Feedback directo y conversaciones difíciles: aprender a dar retroalimentación clara sin diluirla en exceso de empatía',
+      'Toma de decisiones firme bajo presión: desarrollar la capacidad de decidir rápido cuando el contexto lo exige',
+      'Asertividad y límites saludables: equilibrar la empatía con la claridad de lo que sí y lo que no',
+      'Liderazgo orientado a resultados: conectar el bienestar del equipo con los KPIs de desempeño',
+      'Influencia y persuasión: convertir tu empatía en argumento convincente para alinear sin imponer'
+    ],
+    opuesto_tension:{
+      desc:'Como líder Agua, tu mayor tensión es con Fuego. Donde tú pausas para escuchar, Fuego quiere actuar. Donde tú cuidas el proceso relacional, Fuego empuja por el resultado. Esta fricción se siente como "impaciencia vs. lentitud" — pero vista desde el propósito, Fuego te recuerda que el cuidado también incluye la exigencia, y tú le recuerdas a Fuego que la velocidad sin conexión humana desgasta al equipo.',
+      trabajar:[
+        'Practica "acordar el ritmo" antes de cada proyecto: define con el equipo cuándo acelerar (modo Fuego) y cuándo consolidar (modo Agua)',
+        'Cuando sientas que Fuego te presiona, traduce su urgencia: pregúntate si hay algo válido en esa velocidad que tú podrías integrar',
+        'Busca un aliado Fuego en tu equipo para balancear decisiones: tú validas el impacto humano, él valida la viabilidad de resultado',
+        'Aprende a cerrar conversaciones con un compromiso concreto — el Agua a veces deja los acuerdos en el aire',
+        'Usa la tensión Agua-Fuego como señal de salud del equipo: cuando no hay tensión, alguno de los dos no está siendo auténtico'
+      ]
+    },
+    potenciar:[
+      'Crea espacios de escucha estructurada al inicio de cada proyecto: check-in de 5 minutos donde cada voz cuenta',
+      'Asigna roles según el elemento: deja que Fuego lidere la visión y el arranque, tú lideras la cohesión y el cierre',
+      'Usa tu empatía para leer las tensiones entre elementos antes de que se conviertan en conflicto',
+      'Diseña rituales de reconocimiento que nombren la contribución específica de cada estilo de liderazgo',
+      'Facilita conversaciones entre los opuestos del equipo: tú eres el puente natural entre todos los elementos'
+    ],
+    identificar_opuesto:[
+      'Habla rápido, va directo al grano y parece que siempre tiene prisa',
+      'Propone soluciones antes de que termines de explicar el problema',
+      'Se incomoda con las reuniones largas y con los procesos que "tardan mucho"',
+      'Usa palabras como "hagámoslo", "¿cuándo arrancamos?", "no hay tiempo que perder"',
+      'Se frustra cuando el equipo no decide o cuando hay demasiada consulta antes de actuar',
+      'Su lenguaje corporal es expansivo: gesticulación, energía, movimiento, intensidad en la mirada'
+    ],
+    manejo_opuesto:[
+      'Sé directo desde el inicio: dile el objetivo y el plazo antes de dar el contexto — ellos necesitan saber el destino para escuchar el camino',
+      'Propón plazos concretos: "¿podemos tener esto en 48h?" los activa más que una fecha lejana',
+      'Valida su energía antes de frenarla: "me parece clave tu empuje, y quiero que también consideremos este impacto en el equipo"',
+      'Dales responsabilidades con autonomía real: si les das poder de decisión, lo asumen con excelencia',
+      'Evita reuniones extensas con ellos sin una agenda clara — propón micro-reuniones de 20 minutos con un solo objetivo',
+      'Cuando hay tensión, nómbrala sin drama: "siento que vamos en ritmos distintos, ¿cómo encontramos un punto de encuentro?"'
+    ],
+    mejoras_lider:[
+      'Desarrollar asertividad: tu empatía es poderosa, pero a veces suaviza tanto los mensajes que se pierden — practica la claridad directa',
+      'Tomar decisiones con menos información: el Agua tiende a esperar el consenso perfecto; aprende a decidir con el 70% y ajustar en marcha',
+      'Sostener conversaciones incómodas: las conversaciones que evitas hoy son las crisis del mañana',
+      'Establecer límites en la carga emocional: no puedes contener las emociones de todos sin recargar las tuyas propias',
+      'Orientar más hacia resultados: el equipo te percibe como un gran contenedor humano — también necesitan verte como alguien que exige',
+      'Visibilizar tu liderazgo: el Agua muchas veces lidera desde las sombras; aprende a tomar espacio y a reivindicar tu contribución'
+    ],
+    plan_formacion:[
+      {fase:'Fase 1 · Mes 1-2: Autoconocimiento del patrón',items:['Lleva un diario de liderazgo: 3 veces por semana anota una decisión que tomaste y si la pospusiste por cuidar a alguien','Identifica tus 3 principales situaciones de evitación (conversaciones difíciles que no has tenido)','Completa el ejercicio "¿Qué diría Fuego aquí?": aplícalo a una situación pendiente']},
+      {fase:'Fase 2 · Mes 3-4: Desarrollo de la tensión con el opuesto',items:['Elige un par Fuego en tu equipo y acuerda un protocolo de retroalimentación mutua mensual','Practica dar feedback directo en formato SCI (Situación-Comportamiento-Impacto) 2 veces por semana','Toma una decisión relevante en menos de 24h sin consultar a todo el equipo — y evalúa el resultado']},
+      {fase:'Fase 3 · Mes 5-6: Integración y liderazgo expandido',items:['Lidera un proyecto donde tú pongas las metas y plazos (no solo el equipo)','Facilita una sesión de retrospectiva donde des y recibas feedback sin suavizarlo','Diseña un ritual de equipo que combine conexión (Agua) con rendición de cuentas (Fuego)','Evalúa con tu equipo: ¿sienten que también los exiges, o solo los contienes?']}
+    ]
+  },
+  B:{
+    titulo:'El Líder Visionario · Fuego',
+    subtitulo:'Enciendes, inspiras y movilizas',
+    desc:'Tu liderazgo arde con pasión y propósito. Inspiras a otros con tu energía, tu claridad de visión y tu capacidad para convertir ideas en movimiento. Eres el catalizador que acelera al equipo hacia los resultados y el que mantiene viva la llama cuando la motivación decae. Tu desafío es sostener esa energía sin quemar a quienes van a tu lado.',
+    fortalezas:['Visión clara y capacidad de inspiración','Alta energía y urgencia para la acción','Orientación a resultados y a la excelencia','Capacidad de motivar en momentos de adversidad','Rapidez en la toma de decisiones y en la ejecución'],
+    competencias:[
+      'Escucha activa y paciencia estratégica: aprender a desacelerar para tomar decisiones con más información',
+      'Delegación genuina: confiar en el equipo y soltar el control operativo para enfocarte en lo estratégico',
+      'Regulación emocional: canalizar la intensidad sin que genere miedo o tensión en el equipo',
+      'Construcción de consenso: involucrar al equipo en la visión para que sea compartida, no impuesta',
+      'Sostenibilidad del ritmo: aprender a distinguir cuándo acelerar y cuándo consolidar'
+    ],
+    opuesto_tension:{
+      desc:'Como líder Fuego, tu mayor tensión es con Agua. Donde tú decides, Agua consulta. Donde tú ves urgencia, Agua ve la necesidad de procesar. Esta fricción se siente como "¿por qué tardan tanto?" — pero vista desde el propósito, Agua te recuerda que las personas no son recursos y que un equipo quemado entrega menos, no más. Agua te cuida de tu propio fuego.',
+      trabajar:[
+        'Antes de tomar una decisión mayor, pregunta a tu equipo: "¿Qué estoy dejando de ver?" — y espera la respuesta real',
+        'Identifica cuándo tu intensidad genera energía vs. cuándo genera miedo: son señales completamente distintas',
+        'Designa un "vocero Agua" en tus reuniones: alguien que tenga permiso explícito de frenar cuando el ritmo está afectando al equipo',
+        'Practica el silencio deliberado: en tu próxima reunión, no hables en los primeros 5 minutos, solo escucha',
+        'Aprende a celebrar el proceso, no solo el resultado — el equipo necesita sentir que el camino también vale'
+      ]
+    },
+    potenciar:[
+      'Define la visión de forma co-construida: lleva al equipo al "por qué" antes de entregarles el "cómo"',
+      'Canaliza la energía de Agua para que el equipo no se queme: deja que Agua regule el ritmo emocional',
+      'Usa a Tierra como anclaje: antes de lanzar una nueva idea, pídele a tu Tierra que evalúe la ejecución',
+      'Aprovecha a Aire como co-creador de la visión: juntos generan estrategias que ninguno vería solo',
+      'Establece pausas de revisión cada 30 días: la velocidad sin retrospectiva repite errores'
+    ],
+    identificar_opuesto:[
+      'Prefiere escuchar antes de hablar — hace preguntas antes de dar opiniones',
+      'Se toma su tiempo antes de responder; puede parecer lento, pero está procesando profundamente',
+      'Se preocupa más por cómo está el equipo que por los plazos y métricas',
+      'Usa palabras como "¿cómo se sienten?", "necesitamos asegurarnos de que todos estén bien", "no hay que quemar a la gente"',
+      'En tensión tiende a ceder o a armonizar antes de confrontar',
+      'Su energía es tranquila, presente y contenedora — genera calma en el caos'
+    ],
+    manejo_opuesto:[
+      'Antes de pedirle algo, reconoce cómo está y cómo está el equipo — necesitan ese puente emocional para darte su mejor rendimiento',
+      'No los presiones con urgencia sin contexto: explícales el por qué antes del qué — la razón humana los mueve',
+      'Invítalos a dar su opinión explícitamente: en reuniones suelen callar si sienten que el ambiente no es seguro',
+      'Cuando hay una decisión difícil, consulta con ellos: se sentirán valorados y te darán perspectivas que tú no ves',
+      'Evita la impaciencia visible — tu intensidad puede silenciarlos aunque tengan algo valioso que decir',
+      'Cuando hay tensión, dale espacio y tiempo: no fuerces una resolución rápida — el Agua necesita procesar para responder auténticamente'
+    ],
+    mejoras_lider:[
+      'Aprender a soltar el control: tienes la visión y sabes cómo ejecutar, pero el equipo necesita aprender a hacerlo sin ti en cada paso',
+      'Desarrollar paciencia estratégica: no toda decisión necesita ser tomada en el momento; a veces esperar 24h mejora exponencialmente el resultado',
+      'Escuchar para comprender, no para responder: tu mente ya está generando la solución mientras el otro aún habla — detén eso conscientemente',
+      'Regular la intensidad: tu fuego puede inspirar o agotar — aprende a leer cuándo el equipo ya no puede seguir tu ritmo',
+      'Construir consenso real: involucrar al equipo en la visión no es perder tiempo, es garantizar ejecución',
+      'Cuidar la relación en el proceso: los resultados que logras con personas agotadas tienen un costo oculto que aparece después'
+    ],
+    plan_formacion:[
+      {fase:'Fase 1 · Mes 1-2: Autoconocimiento del patrón',items:['Lleva un registro de tus decisiones: ¿cuántas tomaste sin consultar? ¿cuál fue el impacto en el equipo?','Pide feedback anónimo a 3 personas de tu equipo: "¿Qué me pides que haga diferente?"','Identifica tus 3 principales detonadores emocionales en el trabajo y el patrón que generan']},
+      {fase:'Fase 2 · Mes 3-4: Desarrollo de la tensión con el opuesto',items:['Elige un par Agua en tu equipo y practica co-decidir: primero él/ella escucha, luego tú decides juntos','Aplica "pausa de 24h" para decisiones mayores: espera un día antes de comunicar','Facilita una reunión donde tú solo hagas preguntas — sin dar ninguna respuesta ni solución']},
+      {fase:'Fase 3 · Mes 5-6: Integración y liderazgo expandido',items:['Lidera un proceso de cambio donde el equipo defina el ritmo, no tú','Diseña un "panel de salud del equipo": métricas de bienestar junto con métricas de desempeño','Mentoriza a un líder Agua: enseñarle a ser más firme te obligará a entender esa energía desde adentro','Evalúa: ¿el equipo te sigue por inspiración o por miedo? Busca saberlo con honestidad']}
+    ]
+  },
+  C:{
+    titulo:'El Líder Estructurador · Tierra',
+    subtitulo:'Anclas, sostienes y construyes',
+    desc:'Tu liderazgo es la roca sobre la que el equipo construye. Generas seguridad, previsibilidad y confianza a través de sistemas, procesos y compromisos cumplidos. Eres el ancla que mantiene al equipo firme frente a la incertidumbre y el que convierte las buenas intenciones en resultados tangibles. Tu reto es abrirte a la experimentación sin perder tu esencia.',
+    fortalezas:['Consistencia y confiabilidad: cumples lo que prometes','Diseño de sistemas y procesos que sostienen el crecimiento','Pensamiento práctico y orientado a la realidad','Capacidad de sostener el rumbo en momentos de cambio','Generación de ambientes de seguridad psicológica a través de la estructura'],
+    competencias:[
+      'Agilidad y tolerancia a la ambigüedad: desarrollar soltura ante lo inesperado sin perder el rigor',
+      'Innovación aplicada: aprender a salir del manual cuando el contexto lo requiere',
+      'Comunicación inspiradora: transmitir la visión con emoción y no solo con datos y procesos',
+      'Liderazgo de transformación: gestionar el cambio desde la confianza, no desde el control',
+      'Empoderamiento del equipo: dar autonomía real sin perder los estándares de calidad'
+    ],
+    opuesto_tension:{
+      desc:'Como líder Tierra, tu mayor tensión es con Aire. Donde tú ves un proceso probado, Aire ve una limitación. Donde tú construyes sobre lo que funciona, Aire quiere reinventar. Esta fricción se siente como "irreverencia vs. imprudencia" — pero vista desde el propósito, Aire te recuerda que el mundo cambia y lo que hoy es un sistema sólido puede ser mañana una trampa. Aire te cuida de la rigidez.',
+      trabajar:[
+        'Cuando Aire proponga algo nuevo, practica la pregunta "¿y si funciona?" antes de "¿por qué no funcionará?"',
+        'Establece zonas de experimento: espacios controlados donde el equipo puede innovar sin poner en riesgo los sistemas centrales',
+        'Pide a tu Aire del equipo que te presente una propuesta de mejora mensual — y comprométete a implementar al menos una',
+        'Aprende a distinguir "esto no funciona" de "esto me incomoda": son cosas distintas',
+        'Crea protocolos de evaluación de ideas nuevas que sean rigurosos pero no paralizantes'
+      ]
+    },
+    potenciar:[
+      'Diseña sistemas y procesos claros que den estructura al caos creativo de Aire y Fuego',
+      'Sé el guardián de los compromisos: cuando el equipo pierde el rumbo, tú lo anclas sin juzgar',
+      'Construye puentes entre la visión de Fuego y la ejecución real: tú eres el traductor del equipo',
+      'Crea documentación viva de aprendizajes para que el equipo no repita errores',
+      'Establece rituales de cierre de proyecto: el equipo necesita saber cuándo algo está terminado'
+    ],
+    identificar_opuesto:[
+      'Sus ideas saltan de un tema a otro con conexiones que no siempre son obvias para los demás',
+      'Empieza muchas cosas y no siempre las termina; se aburre con los detalles de implementación',
+      'Hace preguntas del tipo "¿y si lo hiciéramos diferente?" aun cuando las cosas funcionan bien',
+      'Usa palabras como "¿y si?", "imagínate que…", "¿no sería mejor…?", "tengo una idea"',
+      'Se activa con los retos nuevos y se desconecta con la rutina y los procesos repetitivos',
+      'En reuniones puede parecer distraído, pero suele conectar puntos que nadie más conectó'
+    ],
+    manejo_opuesto:[
+      'No les presentes solo el proceso: dales la visión grande primero y después el cómo — necesitan ver la película antes del guión',
+      'Dales espacio para proponer antes de que tú presentes la solución — si sientes que "ya sé lo que van a decir", espera igual',
+      'Convierte sus ideas en mini-proyectos con plazos cortos: el Aire necesita ver que sus propuestas aterrizan, o perderá interés',
+      'Diles explícitamente que su creatividad es valiosa para el equipo — necesitan sentir que la innovación tiene un lugar aquí',
+      'Cuando rechaces una idea, ofrece siempre una alternativa o una pregunta: "¿qué pasaría si lo aplicamos solo a esta área?"',
+      'Involúcralos en el diseño de los procesos — es más probable que los respeten si los co-crearon'
+    ],
+    mejoras_lider:[
+      'Desarrollar tolerancia a la ambigüedad sin perder el rigor: no todo tiene que tener proceso, pero algunos procesos existen por algo',
+      'Comunicar con más emoción y menos datos: tu equipo necesita sentir la visión, no solo entenderla racionalmente',
+      'Abrir más espacio para la experimentación controlada: si siempre exiges seguir el manual, apagas la creatividad del equipo',
+      'Aprender a gestionar el cambio desde la confianza: los cambios bien gestionados no necesitan más control, necesitan más confianza',
+      'Dar autonomía real: delegar también implica aceptar que el resultado puede ser diferente al tuyo — y que eso puede ser válido',
+      'Revisar periódicamente lo que ya funciona: un buen proceso de hoy puede ser un obstáculo mañana — la revisión es parte del rigor'
+    ],
+    plan_formacion:[
+      {fase:'Fase 1 · Mes 1-2: Autoconocimiento del patrón',items:['Registra 3 momentos donde dijiste "no" a una idea nueva sin explorarla del todo','Identifica cuáles de tus procesos actuales llevan más de 1 año sin revisión','Haz el ejercicio "si empezáramos de cero": ¿qué de lo que haces hoy dejarías de hacer?']},
+      {fase:'Fase 2 · Mes 3-4: Desarrollo de la tensión con el opuesto',items:['Elige un par Aire en tu equipo y acuerda explorar juntos una de sus ideas durante 30 días','Participa en una sesión de design thinking o ideación sin ser el validador del proceso','Practica "el sí provisional": acepta una propuesta nueva condicionada a una revisión en 2 semanas']},
+      {fase:'Fase 3 · Mes 5-6: Integración y liderazgo expandido',items:['Lidera un proceso de mejora donde el equipo rediseñe un procedimiento existente sin tu guía inicial','Facilita una sesión de retrospectiva donde identifiquen qué procesos deben morir','Co-diseña con Aire una iniciativa nueva desde cero — tú pones la estructura, él/ella la visión','Evalúa: ¿el equipo innova en tu presencia o lo hace cuando no estás?']}
+    ]
+  },
+  D:{
+    titulo:'El Líder Innovador · Aire',
+    subtitulo:'Vuelas, conectas y abres caminos',
+    desc:'Tu liderazgo vuela alto: generas ideas donde otros ven obstáculos, conectas puntos que nadie más relaciona y abres caminos en la incertidumbre. Eres el motor de la innovación y el cambio en tu equipo, y tienes la capacidad de ver el futuro con una claridad que a veces desconcierta a quienes aún viven en el presente. Tu desafío es aterrizar esa visión en acción consistente.',
+    fortalezas:['Pensamiento divergente y creatividad estratégica','Capacidad de adaptación rápida a contextos nuevos','Visión sistémica y conexión entre ideas aparentemente disconexas','Apertura al cambio y a la experimentación','Inspiración desde la posibilidad, no desde el miedo'],
+    competencias:[
+      'Foco y priorización: elegir las pocas ideas que mayor impacto generan y ejecutarlas con disciplina',
+      'Seguimiento y cierre: desarrollar hábitos de finalización — muchos proyectos iniciados, pocos terminados',
+      'Regulación de la impaciencia: manejar la frustración cuando los resultados tardan',
+      'Comunicación estructurada: presentar ideas complejas de forma simple, secuencial y accionable',
+      'Compromiso sostenido: mantener la energía con el equipo más allá del entusiasmo inicial'
+    ],
+    opuesto_tension:{
+      desc:'Como líder Aire, tu mayor tensión es con Tierra. Donde tú quieres reinventar, Tierra quiere consolidar. Donde tú ves una oportunidad nueva, Tierra ve un riesgo no evaluado. Esta fricción se siente como "¿por qué todo tiene que ser un proceso?" — pero vista desde el propósito, Tierra te recuerda que las ideas sin aterrizaje son solo fuego de artificio. Tierra es quien convierte tus visiones en realidad.',
+      trabajar:[
+        'Antes de presentar una idea nueva, pregúntate: "¿Puedo describir los 3 primeros pasos concretos?" Si no puedes, trabájala más',
+        'Busca un par Tierra en tu equipo y conviértelo en tu "socio de aterrizaje": él/ella valida la ejecución de tus propuestas',
+        'Practica el compromiso de 30 días: elige una iniciativa y no abandones ni lances otra hasta terminarla',
+        'Aprecia en voz alta cuando Tierra frena algo tuyo y resulta tener razón — eso construye confianza',
+        'Diseña tus ideas en formato "propuesta ejecutable": objetivo, recursos, plazo, responsable, métrica'
+      ]
+    },
+    potenciar:[
+      'Facilita sesiones de ideación donde el equipo explore sin límites — tú eres el mejor maestro de ceremonias de la creatividad',
+      'Asocia tu visión con la estructura de Tierra: antes de presentarla al equipo, pídele a Tierra que la valide en términos de ejecución',
+      'Usa la empatía de Agua para validar si tus innovaciones resuenan con las necesidades reales del equipo',
+      'Crea ciclos de experimentación cortos (sprints de 2 semanas) para aprender sin comprometer todo el presupuesto',
+      'Documenta las ideas que no ejecutas hoy — pueden ser el oro del siguiente ciclo de planificación'
+    ],
+    identificar_opuesto:[
+      'Es metódico, ordenado y siempre pregunta "¿tenemos un proceso para esto?"',
+      'Desconfía de las ideas que no tienen un plan concreto detrás',
+      'Prefiere hacer las cosas paso a paso y se incomoda cuando alguien "se salta" etapas',
+      'Usa palabras como "necesitamos un procedimiento", "¿quién lo va a ejecutar?", "¿cuál es el protocolo?"',
+      'Valora la consistencia y la predictibilidad — los cambios repentinos lo generan resistencia visible',
+      'Cumple lo que promete y espera lo mismo de todos — la falta de seguimiento lo frustra profundamente'
+    ],
+    manejo_opuesto:[
+      'Presenta tus ideas con estructura: objetivo, pasos, plazos y métricas — así el Tierra puede evaluarlas en su idioma',
+      'No lo presiones a decidir en el momento: dale tiempo para analizar antes de la reunión, comparte la información con anticipación',
+      'Reconoce sus sistemas antes de proponer cambios: "lo que han construido funciona bien, y quiero proponer una mejora"',
+      'Involúcralo en el diseño de la implementación de tus ideas: si co-construye el plan, lo ejecuta con excelencia',
+      'Evita cambios sin aviso o "improvisaciones repentinas" en procesos que él/ella coordina — genera tensión innecesaria',
+      'Cuando haya tensión, busca el acuerdo en los datos: el Tierra confía más en la evidencia que en la intuición'
+    ],
+    mejoras_lider:[
+      'Desarrollar foco y disciplina de ejecución: tus ideas son brillantes, pero necesitas aprender a llevarlas hasta el final',
+      'Aprender a priorizar: no todas las ideas merecen energía al mismo tiempo — elige las 2 que más impacto generan y dales todo',
+      'Regular la impaciencia: los procesos, las personas y los resultados toman tiempo — presionar no los acelera, los desgasta',
+      'Comunicar de forma más estructurada: una idea bien presentada tiene 10 veces más probabilidad de ser adoptada que una brillante pero confusa',
+      'Cultivar el compromiso sostenido: el equipo necesita verte presente en la ejecución, no solo en el arranque',
+      'Respetar los procesos existentes antes de reinventarlos: hay aprendizaje acumulado en lo que ya funciona que no siempre es visible desde afuera'
+    ],
+    plan_formacion:[
+      {fase:'Fase 1 · Mes 1-2: Autoconocimiento del patrón',items:['Lista todos los proyectos que iniciaste en el último año: ¿cuántos terminaste?','Identifica tu patrón de abandono: ¿en qué momento de un proyecto pierdes el interés?','Haz el ejercicio "idea vs. proyecto": aprende a distinguir cuándo algo es una idea y cuándo merece convertirse en iniciativa']},
+      {fase:'Fase 2 · Mes 3-4: Desarrollo de la tensión con el opuesto',items:['Elige un par Tierra en tu equipo y practica co-diseñar: tú traes la visión, él/ella trae el plan','Comprométete a completar una iniciativa existente antes de proponer una nueva','Aplica el formato "propuesta ejecutable" a tu próxima idea antes de presentarla al equipo']},
+      {fase:'Fase 3 · Mes 5-6: Integración y liderazgo expandido',items:['Lidera un proyecto con cronograma, hitos y cierre formal — sin salirte del alcance original','Facilita una sesión donde el equipo priorice: de 10 ideas, elegir 2 para ejecutar','Co-lidera con Tierra una iniciativa de mejora de procesos — tú pones la visión, él/ella la ruta','Evalúa: ¿el equipo te ve como alguien que cumple, o solo como alguien que inspira?']}
+    ]
+  }
+};
+
+// Tensiones entre pares de elementos
+var TENSIONES = {
+  'A-B':'Agua↔Fuego: la tensión entre cuidar el proceso y empujar el resultado. Agua escucha antes de decidir; Fuego decide para poder avanzar. Gestionada bien, esta dupla genera velocidad con humanidad.',
+  'B-A':'Fuego↔Agua: ver arriba.',
+  'A-C':'Agua↔Tierra: ambos cuidan al equipo, pero Agua desde la emoción y Tierra desde la estructura. Pueden ser aliados poderosos o caer en el exceso de consenso.',
+  'C-A':'Tierra↔Agua: ver arriba.',
+  'A-D':'Agua↔Aire: Agua necesita profundidad; Aire necesita amplitud. Agua frena la dispersión de Aire; Aire abre a Agua hacia nuevas posibilidades.',
+  'D-A':'Aire↔Agua: ver arriba.',
+  'B-C':'Fuego↔Tierra: la tensión más frecuente en equipos de alta exigencia. Fuego lanza; Tierra consolida. Sin puentes, es choque. Con acuerdo de roles, es el motor de la ejecución.',
+  'C-B':'Tierra↔Fuego: ver arriba.',
+  'B-D':'Fuego↔Aire: ambos son energía expansiva, pero Fuego va hacia el resultado y Aire va hacia la exploración. Pueden acelerar juntos o dispersarse en ideas sin cierre.',
+  'D-B':'Aire↔Fuego: ver arriba.',
+  'C-D':'Tierra↔Aire: la tensión más creativa. Tierra construye sobre lo probado; Aire quiere reinventar. Sin diálogo, se bloquean. Con respeto, generan innovación sostenible.',
+  'D-C':'Aire↔Tierra: ver arriba.'
+};
+
+// ══════════════════════════════════════
+// PERFIL CAFÉ POR ELEMENTO
+// ══════════════════════════════════════
+var CAFE = {
+  A:{
+    metodo:'Pour Over · V60',
+    metodo_desc:'Lento, preciso, profundo. El Pour Over exige paciencia, atención al flujo del agua y respeto por los tiempos del café. Igual que el líder Agua: no apresura, escucha al proceso y obtiene lo mejor de cada persona.',
+    nota:'Notas frutales y florales, acidez suave, cuerpo ligero. Un café que invita a la conversación.',
+    ritual:'Prepara tu café en silencio. Observa cómo el agua y el café se encuentran. Eso eres tú con tu equipo.',
+    no_tanto:'Espresso',
+    no_tanto_desc:'La intensidad y la velocidad del espresso contrastan con tu energía natural. No es que no puedas tomarlo — es que no representa cómo lideras mejor.',
+    analogia:'Así como el Pour Over extrae lo mejor del grano sin prisa, tú extraes lo mejor de las personas dándoles espacio y escucha genuina.'
+  },
+  B:{
+    metodo:'Espresso · Ristretto',
+    metodo_desc:'Concentrado, directo, de alto impacto en poco tiempo. El espresso no pide permiso: llega, transforma y deja huella. Exactamente como el líder Fuego: presencia inmediata, energía que activa a todo el equipo.',
+    nota:'Intenso, cuerpo pleno, retrogusto persistente. Un café que no se olvida.',
+    ritual:'Tómalo de pie. Con intención. Sin distracciones. Como lideras: todo al frente.',
+    no_tanto:'Cold Brew (24 horas)',
+    no_tanto_desc:'La lentitud del cold brew pone a prueba tu paciencia. Un proceso que exige esperar sin ver resultados inmediatos — tu mayor desafío.',
+    analogia:'El espresso es presión, temperatura y tiempo perfectos — controlados con maestría. Tu liderazgo es así: sabes cuándo presionar y cuándo soltar para obtener el mejor resultado.'
+  },
+  C:{
+    metodo:'French Press · Prensa Francesa',
+    metodo_desc:'Estructura, tiempo y un ritual que no cambia. La French Press tiene pasos definidos, respeta los tiempos y da un resultado consistente y reconfortante. Como el líder Tierra: confiable, sólido, predecible en el mejor sentido.',
+    nota:'Cuerpo pleno, textura, profundidad. Un café que sostiene.',
+    ritual:'Prepara siempre a la misma hora. Con la misma taza. La consistencia es tu superpoder.',
+    no_tanto:'Aeropress experimental',
+    no_tanto_desc:'Las recetas cambiantes y la experimentación constante del Aeropress pueden generarte ruido. Prefieres un proceso probado a uno en permanente revisión.',
+    analogia:'La French Press tiene una estructura clara: agua, café, tiempo, presión. Cada paso importa. Así construyes tú los equipos: con fundamentos sólidos que dan resultados predecibles.'
+  },
+  D:{
+    metodo:'Aeropress · Chemex',
+    metodo_desc:'Versatilidad, experimentación, múltiples formas de llegar al mismo resultado. El Aeropress no tiene una sola receta correcta — cada preparación es una exploración. Como el líder Aire: siempre encuentra caminos nuevos y conecta ideas que nadie más había unido.',
+    nota:'Variable según la receta: puede ser brillante, ácido, complejo o suave. Cada taza es una sorpresa.',
+    ritual:'Cambia la receta cada semana. Experimenta con temperatura, molienda, tiempo. El proceso ES el punto.',
+    no_tanto:'Tinto tradicional (colado)',
+    no_tanto_desc:'La rigidez del método tradicional puede sentirse limitante para ti. Necesitas espacio para explorar, no recetas fijas.',
+    analogia:'El Aeropress puede prepararse de decenas de formas distintas y siempre da algo interesante. Tú eres así: das vuelta a los problemas, pruebas ángulos nuevos y llevas al equipo a lugares que no sabía que podía llegar.'
+  }
+};
+
+// ══════════════════════════════════════
+// CONFIGURACIÓN DEL TALLER
+// ══════════════════════════════════════
+var cfgKeys=['cfg-empresa','cfg-direccion','cfg-responsable','cfg-fecha','cfg-programa','cfg-email'];
+
+function cargarConfig(){
+  try{
+    cfgKeys.forEach(function(k){
+      var v=localStorage.getItem(k)||'';
+      var el=document.getElementById(k);
+      if(el) el.value=v;
+    });
+    actualizarPreviewConfig();
+  }catch(e){}
+}
+
+function guardarConfig(){
+  try{
+    cfgKeys.forEach(function(k){
+      var el=document.getElementById(k);
+      if(el) localStorage.setItem(k,el.value);
+    });
+    actualizarPreviewConfig();
+  }catch(e){}
+}
+
+function limpiarConfig(){
+  cfgKeys.forEach(function(k){
+    try{localStorage.removeItem(k);}catch(e){}
+    var el=document.getElementById(k);
+    if(el) el.value='';
+  });
+  actualizarPreviewConfig();
+}
+
+function getCfg(){
+  var c={};
+  cfgKeys.forEach(function(k){
+    try{c[k]=localStorage.getItem(k)||'';}catch(e){c[k]='';}
+  });
+  return c;
+}
+
+function actualizarPreviewConfig(){
+  var c=getCfg();
+  var lines=[];
+  if(c['cfg-programa']) lines.push('<strong>Programa:</strong> '+c['cfg-programa']);
+  if(c['cfg-empresa'])  lines.push('<strong>Empresa:</strong> '+c['cfg-empresa']);
+  if(c['cfg-responsable']) lines.push('<strong>Responsable TH:</strong> '+c['cfg-responsable']);
+  if(c['cfg-direccion']) lines.push('<strong>Sede:</strong> '+c['cfg-direccion']);
+  if(c['cfg-fecha'])    lines.push('<strong>Fecha del taller:</strong> '+formatFechaCfg(c['cfg-fecha']));
+  if(c['cfg-email'])    lines.push('<strong>Contacto:</strong> '+c['cfg-email']);
+  var prev=document.getElementById('cfg-preview');
+  if(prev) prev.innerHTML=lines.length?lines.join('<br>'):'<em style="color:var(--muted)">Completa los campos para ver la vista previa</em>';
+  // Actualizar subtítulo del topbar
+  var sub=document.getElementById('tb-subtitle');
+  if(sub){ var lbl='Panel del Facilitador'; if(c['cfg-empresa']) lbl+=' · '+c['cfg-empresa']; sub.textContent=lbl; }
+}
+
+function mostrarMsgConfig(txt,tipo){
+  var el=document.getElementById('cfg-msg');
+  if(!el) return;
+  el.textContent=txt;
+  el.className='msg '+(tipo==='ok'?'ok':'err');
+  el.style.display='block';
+  setTimeout(function(){el.style.display='none';},3000);
+}
+
+function formatFechaCfg(val){
+  if(!val) return '';
+  try{
+    var d=new Date(val+'T12:00:00');
+    var opts={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+    return d.toLocaleDateString('es-CO',opts);
+  }catch(e){return val;}
+}
+
+function actualizarFechaDisplay(){
+  var el=document.getElementById('cfg-fecha');
+  var disp=document.getElementById('fecha-display');
+  if(!el||!disp) return;
+  if(el.value){
+    disp.textContent=formatFechaCfg(el.value);
+    disp.style.color='var(--azul)';
+  } else {
+    disp.textContent='';
+  }
+}
+
+// Facilitator link
+function copiarLink(){
+  var inp=document.getElementById('facilitator-link');
+  if(!inp) return;
+  try{
+    navigator.clipboard.writeText(inp.value).then(function(){
+      var msg=document.getElementById('copy-msg');
+      if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
+    });
+  }catch(e){
+    inp.select();document.execCommand('copy');
+    var msg=document.getElementById('copy-msg');
+    if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
+  }
+}
+
+// QR Code functions
+var qrInstance=null;
+function regenerarQR(){
+  var url=document.getElementById('qr-url');
+  var container=document.getElementById('qr-container');
+  if(!container) return;
+  var qrUrl=(url&&url.value.trim())?url.value.trim():'https://gmorenocoach.github.io/taller/';
+  container.innerHTML='';
+  if(typeof QRCode==='undefined') return;
+  try{
+    qrInstance=new QRCode(container,{
+      text:qrUrl,
+      width:184,height:184,
+      colorDark:'#0D1F3C',colorLight:'#ffffff',
+      correctLevel:QRCode.CorrectLevel.H
+    });
+  }catch(e){container.innerHTML='<div style="font-size:11px;color:red;padding:12px">Error generando QR</div>';}
+}
+
+function imprimirQR(){
+  var qrDiv=document.getElementById('qr-container');
+  var overlay=document.getElementById('qr-logo-overlay');
+  if(!qrDiv) return;
+  var win=window.open('','_blank','width=400,height=500');
+  var logo='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:#0D1F3C;border-radius:8px;display:flex;align-items:center;justify-content:center;border:3px solid #fff"><svg viewBox="0 0 60 60" style="width:32px;height:32px" fill="none"><path d="M10 30 C10 16 50 16 50 30" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M10 30 C10 44 50 44 50 30" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M16 30 C16 23 22 21 22 30 C22 39 16 37 16 30" stroke="rgba(255,255,255,0.6)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M44 30 C44 23 38 21 38 30 C38 39 44 37 44 30" stroke="rgba(255,255,255,0.6)" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.95)"/></svg></div>';
+  win.document.write('<html><head><title>QR Café con Propósito</title></head><body style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:sans-serif;background:#fff">');
+  win.document.write('<div style="text-align:center;padding:32px">');
+  win.document.write('<div style="font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#0D1F3C;margin-bottom:20px">CAFÉ CON PROPÓSITO · SOY INTEGRAL</div>');
+  win.document.write('<div style="position:relative;display:inline-block;border:8px solid #0D1F3C;border-radius:12px;overflow:hidden">');
+  win.document.write(qrDiv.innerHTML);
+  win.document.write(logo+'</div>');
+  win.document.write('<div style="margin-top:16px;font-size:14px;color:#5A7090">Escanea para registrarte en el taller</div>');
+  win.document.write('<div style="margin-top:8px;font-size:11px;color:#C4973B;letter-spacing:2px;text-transform:uppercase">Soy Integral</div>');
+  win.document.write('</div>');
+  win.document.write('<scr'+'ipt>window.onload=function(){window.print()}</scr'+'ipt>');
+  win.document.write('</body></html>');
+  win.document.close();
+}
+
+function descargarQR(){
+  var container=document.getElementById('qr-container');
+  if(!container) return;
+  var img=container.querySelector('img');
+  if(!img){alert('Primero ingresa una URL para generar el QR');return;}
+  var a=document.createElement('a');
+  a.download='QR_CafeConProposito.png';
+  a.href=img.src;
+  a.click();
+}
+
+function initQR(){
+  setTimeout(function(){
+    regenerarQR();
+    actualizarFechaDisplay();
+  },300);
+}
+
+// ══════════════════════════════════════
+// TABS
+// ══════════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='estadisticas') renderEstadisticas();
+  if(id==='colectivo') renderColectivo();
+  if(id==='informe') actualizarSelectInforme();
+  if(id==='config'){ cargarConfig(); actualizarPreviewConfig(); actualizarFechaDisplay(); setTimeout(regenerarQR,200); }
+  var tabBtns=document.querySelectorAll('.tab');
+  var map={participantes:0,estadisticas:1,informe:2,colectivo:3,config:4};
+  if(map[id]!==undefined) tabBtns[map[id]].classList.add('active');
+}
+
+// ══════════════════════════════════════
+// OPUESTO AUTOMÁTICO DESDE PUNTAJES
+// ══════════════════════════════════════
+function calcularDesdeScores(){
+  var vals={
+    A:parseInt(document.getElementById('p-A').value)||0,
+    B:parseInt(document.getElementById('p-B').value)||0,
+    C:parseInt(document.getElementById('p-C').value)||0,
+    D:parseInt(document.getElementById('p-D').value)||0
+  };
+  var sorted=['A','B','C','D'].map(function(k){return{k:k,v:vals[k]};}).sort(function(a,b){return b.v-a.v;});
+  return{
+    principal: sorted[0].k,
+    complemento: sorted[1].k,
+    opuesto: sorted[sorted.length-1].k,
+    vals: vals
+  };
+}
+
+function actualizarOpuesto(){
+  var r=calcularDesdeScores();
+  var ep=ELEM[r.principal]||{emoji:'?',nombre:'?'};
+  var eo=ELEM[r.opuesto]||{emoji:'?',nombre:'?'};
+  var ec=ELEM[r.complemento]||{emoji:'?',nombre:'?'};
+  var prev=document.getElementById('opuesto-preview');
+  prev.style.display='block';
+  prev.innerHTML='<strong>Principal:</strong> <span style="display:inline-flex;align-items:center;gap:3px">'+elemSVG(r.principal,12)+ep.nombre+'</span>'+
+    ' &nbsp;·&nbsp; <strong>Complemento:</strong> <span style="display:inline-flex;align-items:center;gap:3px">'+elemSVG(r.complemento,12)+ec.nombre+'</span>'+
+    ' &nbsp;·&nbsp; <strong>Opuesto:</strong> <span style="display:inline-flex;align-items:center;gap:3px">'+elemSVG(r.opuesto,12)+eo.nombre+'</span>';
+  // Auto-seleccionar el elemento principal
+  if(!elemSeleccionado || elemSeleccionado!==r.principal){
+    elegirElem(r.principal);
+  }
+}
+
+// ══════════════════════════════════════
+// ELEMENTO SELECTOR
+// ══════════════════════════════════════
+function elegirElem(letra){
+  elemSeleccionado = letra;
+  // Quitar activo de todos
+  document.getElementById('eb-A').classList.remove('activo');
+  document.getElementById('eb-B').classList.remove('activo');
+  document.getElementById('eb-C').classList.remove('activo');
+  document.getElementById('eb-D').classList.remove('activo');
+  // Activar el seleccionado
+  document.getElementById('eb-'+letra).classList.add('activo');
+  // Mostrar texto
+  var e = ELEM[letra];
+  document.getElementById('elem-sel-display').innerHTML = elemSVG(letra,14) + ' ' + e.nombre + ' — ' + e.tipo;
+  document.getElementById('elem-sel-display').style.color = 'var(--gold)';
+  document.getElementById('elem-sel-display').style.fontWeight = '700';
+}
+
+// ══════════════════════════════════════
+// AGREGAR PARTICIPANTE
+// ══════════════════════════════════════
+function mostrarMsg(tipo, texto){
+  var el = document.getElementById('form-msg');
+  el.className = 'msg ' + tipo;
+  el.textContent = texto;
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display='none'; }, 3500);
+}
+
+function agregarParticipante(){
+  var nombre = document.getElementById('m-nombre').value.trim();
+  var cargo = document.getElementById('m-cargo').value.trim();
+  var pA = parseInt(document.getElementById('p-A').value)||0;
+  var pB = parseInt(document.getElementById('p-B').value)||0;
+  var pC = parseInt(document.getElementById('p-C').value)||0;
+  var pD = parseInt(document.getElementById('p-D').value)||0;
+
+  if(!nombre){
+    mostrarMsg('err','⚠️ Escribe el nombre del participante');
+    document.getElementById('m-nombre').focus();
+    return;
+  }
+  if(!elemSeleccionado){
+    mostrarMsg('err','⚠️ Selecciona el elemento principal');
+    return;
+  }
+
+  var calc=calcularDesdeScores();
+  var p = {
+    nombre: nombre,
+    cargo: cargo,
+    elemento: elemSeleccionado,
+    complemento: calc.complemento,
+    opuesto: calc.opuesto,
+    puntajes: {A:pA, B:pB, C:pC, D:pD},
+    fecha: new Date().toLocaleDateString('es-CO')
+  };
+
+  participantes.push(p);
+  mostrarMsg('ok','✅ ' + nombre + ' agregado correctamente');
+  limpiarForm();
+  renderTabla();
+  actualizarSelectInforme();
+}
+
+function limpiarForm(){
+  document.getElementById('m-nombre').value='';
+  document.getElementById('m-cargo').value='';
+  document.getElementById('p-A').value=0;
+  document.getElementById('p-B').value=0;
+  document.getElementById('p-C').value=0;
+  document.getElementById('p-D').value=0;
+  document.getElementById('opuesto-preview').style.display='none';
+  elemSeleccionado='';
+  document.getElementById('eb-A').classList.remove('activo');
+  document.getElementById('eb-B').classList.remove('activo');
+  document.getElementById('eb-C').classList.remove('activo');
+  document.getElementById('eb-D').classList.remove('activo');
+  document.getElementById('elem-sel-display').textContent='Ninguno seleccionado';
+  document.getElementById('elem-sel-display').style.color='var(--muted)';
+  document.getElementById('elem-sel-display').style.fontWeight='400';
+}
+
+// ══════════════════════════════════════
+// TABLA DE PARTICIPANTES
+// ══════════════════════════════════════
+function renderTabla(){
+  var total = participantes.length;
+  document.getElementById('cont-total').textContent = total;
+
+  if(total===0){
+    document.getElementById('tabla-wrap').innerHTML='<div class="empty"><svg viewBox="0 0 24 24" style="width:44px;height:44px;fill:var(--border);margin:0 auto 12px;display:block"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3z"/></svg><div>Aún no hay participantes</div><div style="font-size:12px;margin-top:6px;color:var(--muted)">Usa el formulario de arriba para agregar</div></div>';
+    document.getElementById('btn-csv').style.display='none';
+    document.getElementById('btn-borrar').style.display='none';
+    return;
+  }
+
+  document.getElementById('btn-csv').style.display='inline-block';
+  document.getElementById('btn-borrar').style.display='inline-block';
+
+  var html='<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Nombre</th><th>Cargo</th><th>Elemento</th><th>Puntajes</th><th>Fecha</th><th></th></tr></thead><tbody>';
+  participantes.forEach(function(p,i){
+    var e=ELEM[p.elemento]||{emoji:'?',nombre:'?'};
+    var pts=p.puntajes;
+    html+='<tr>';
+    html+='<td style="color:var(--muted);font-size:12px">'+(i+1)+'</td>';
+    html+='<td><strong>'+p.nombre+'</strong></td>';
+    html+='<td style="color:var(--muted)">'+p.cargo+'</td>';
+    html+='<td><span class="elem-badge" style="display:inline-flex;align-items:center;gap:4px">'+elemSVG(p.elemento,12)+e.nombre+'</span></td>';
+    html+='<td style="font-size:12px;color:var(--muted)">A:'+pts.A+' F:'+pts.B+' T:'+pts.C+' Ai:'+pts.D+'</td>';
+    html+='<td style="font-size:12px;color:var(--muted)">'+p.fecha+'</td>';
+    html+='<td style="display:flex;gap:6px">';
+    html+='<button class="action-btn primary" onclick="verInformeDirecto('+i+')">Ver informe</button>';
+    html+='<button class="action-btn danger" onclick="eliminarParticipante('+i+')">✕</button>';
+    html+='</td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('tabla-wrap').innerHTML=html;
+}
+
+function eliminarParticipante(i){
+  if(!confirm('¿Eliminar a "'+participantes[i].nombre+'"?')) return;
+  participantes.splice(i,1);
+  renderTabla();
+  actualizarSelectInforme();
+}
+
+function borrarTodo(){
+  if(!confirm('¿Borrar TODOS los participantes? Esta acción no se puede deshacer.')) return;
+  participantes=[];
+  renderTabla();
+  actualizarSelectInforme();
+}
+
+function exportarCSV(){
+  var csv='Nombre,Cargo,Elemento,Agua,Fuego,Tierra,Aire,Fecha\n';
+  participantes.forEach(function(p){
+    csv+='"'+p.nombre+'","'+p.cargo+'",'+(ELEM[p.elemento]||{nombre:'?'}).nombre+','+p.puntajes.A+','+p.puntajes.B+','+p.puntajes.C+','+p.puntajes.D+','+p.fecha+'\n';
+  });
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='participantes_cafe_proposito.csv';
+  a.click();
+}
+
+// ══════════════════════════════════════
+// ESTADÍSTICAS
+// ══════════════════════════════════════
+function renderEstadisticas(){
+  var cnt={A:0,B:0,C:0,D:0};
+  participantes.forEach(function(p){if(cnt[p.elemento]!==undefined)cnt[p.elemento]++;});
+  var total=participantes.length;
+  document.getElementById('st-total').textContent=total;
+  document.getElementById('st-agua').textContent=cnt.A;
+  document.getElementById('st-fuego').textContent=cnt.B;
+  document.getElementById('st-tierra').textContent=cnt.C;
+  document.getElementById('st-aire').textContent=cnt.D;
+
+  var dom='—';
+  if(total>0){
+    var maxV=Math.max(cnt.A,cnt.B,cnt.C,cnt.D);
+    if(cnt.A===maxV) dom='A';
+    else if(cnt.B===maxV) dom='B';
+    else if(cnt.C===maxV) dom='C';
+    else dom='D';
+  }
+  var domEl=document.getElementById('st-dom');
+  if(dom==='—'){domEl.textContent='—';}
+  else{domEl.innerHTML=elemSVG(dom,16)+' '+ELEM[dom].nombre;}
+
+  var dist=document.getElementById('dist-elem');
+  if(total===0){dist.innerHTML='<div class="empty"><div>Sin participantes aún</div></div>';return;}
+  dist.innerHTML=['A','B','C','D'].map(function(k){
+    var e=ELEM[k];
+    var pct=total>0?Math.round(cnt[k]/total*100):0;
+    return '<div class="elem-card"><div class="elem-icon">'+elemSVG(k,22)+'</div><div><div class="elem-name">'+e.nombre+'</div><div class="elem-sub">'+pct+'% del equipo</div></div><div class="elem-count">'+cnt[k]+'</div></div>';
+  }).join('');
+
+  // Dinámica
+  var dinam=document.getElementById('dinam-wrap');
+  if(total===0){dinam.innerHTML='<p>Sin participantes</p>';return;}
+  var elems=[];
+  if(cnt.A>0)elems.push('Agua');if(cnt.B>0)elems.push('Fuego');if(cnt.C>0)elems.push('Tierra');if(cnt.D>0)elems.push('Aire');
+  var texto='';
+  if(elems.length===4) texto='<strong>Equipo completo:</strong> Tienen los cuatro elementos presentes. La diversidad de estilos es una fortaleza enorme — el reto es orquestarlos con claridad de roles y espacios de escucha mutua.';
+  else if(elems.length===1) texto='<strong>Equipo homogéneo ('+(elems[0]||'')+'): </strong> Fortaleza en la coherencia, riesgo en el punto ciego de los estilos ausentes. Conviene traer perspectivas externas.';
+  else texto='<strong>Elementos presentes: </strong>'+elems.join(' · ')+'. El equipo tiene una mezcla interesante. Identifica quién puede complementar las ausencias para tener mayor equilibrio.';
+  dinam.innerHTML='<p>'+texto+'</p>';
+}
+
+// ══════════════════════════════════════
+// INFORME INDIVIDUAL
+// ══════════════════════════════════════
+function actualizarSelectInforme(){
+  var sel=document.getElementById('sel-informe');
+  var val=sel.value;
+  sel.innerHTML='<option value="">— Selecciona un participante —</option>';
+  participantes.forEach(function(p,i){
+    var eL=ELEM[p.elemento]||{nombre:'?'};
+    sel.innerHTML+='<option value="'+i+'">'+eL.nombre+' — '+p.nombre+(p.cargo?' · '+p.cargo:'')+'</option>';
+  });
+  if(val!=='' && participantes[parseInt(val)]) sel.value=val;
+}
+
+function verInformeDirecto(i){
+  showTabSilent('informe');
+  actualizarSelectInforme();
+  document.getElementById('sel-informe').value=i;
+  verInforme();
+}
+
+function showTabSilent(id){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('tab-'+id).classList.add('active');
+  var tabs=document.querySelectorAll('.tab');
+  var map={participantes:0,estadisticas:1,informe:2,colectivo:3,config:4};
+  if(map[id]!==undefined) tabs[map[id]].classList.add('active');
+}
+
+function verInforme(){
+  var idx=document.getElementById('sel-informe').value;
+  if(idx===''){
+    document.getElementById('informe-wrap').innerHTML='<div class="empty"><svg viewBox="0 0 24 24" style="width:44px;height:44px;fill:var(--border);margin:0 auto 12px;display:block"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><div>Selecciona un participante para ver su informe</div></div>';
+    return;
+  }
+  var p=participantes[parseInt(idx)];
+  if(!p){return;}
+  var e=ELEM[p.elemento]||{emoji:'?',nombre:'?',tipo:'?'};
+  var eopp=p.opuesto?ELEM[p.opuesto]:null;
+  var ecomp=p.complemento?ELEM[p.complemento]:null;
+  var pf=PERFILES[p.elemento]||{titulo:'Perfil',desc:'',competencias:[],potenciar:[],fortalezas:[],plan_formacion:[],opuesto_tension:{trabajar:[]}};
+  var pts=p.puntajes||{A:0,B:0,C:0,D:0};
+  var allVals=[pts.A,pts.B,pts.C,pts.D];
+  var maxV=Math.max.apply(null,allVals);
+  var minV=Math.min.apply(null,allVals);
+  var rango=maxV-minV||1;
+
+  var html='<div class="informe-page">';
+
+  // ── HEADER EJECUTIVO ──
+  var cfg=getCfg();
+  html+='<div class="inf-topbar">';
+  // Logo Soy Integral (ícono ondas/ojo — marca real)
+  html+='<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">';
+  html+='<svg viewBox="0 0 60 60" style="width:44px;height:44px;" fill="none">';
+  html+='<path d="M10 30 C10 16 50 16 50 30" stroke="rgba(255,255,255,0.85)" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  html+='<path d="M10 30 C10 44 50 44 50 30" stroke="rgba(255,255,255,0.85)" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  html+='<path d="M16 30 C16 23 22 21 22 30 C22 39 16 37 16 30" stroke="rgba(255,255,255,0.55)" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  html+='<path d="M44 30 C44 23 38 21 38 30 C38 39 44 37 44 30" stroke="rgba(255,255,255,0.55)" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  html+='<circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.9)"/>';
+  html+='</svg>';
+  html+='<div style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);text-align:center;font-weight:600">SOY INTEGRAL</div>';
+  html+='</div>';
+  // Separador vertical
+  html+='<div style="width:1px;background:rgba(255,255,255,.15);margin:0 4px;align-self:stretch"></div>';
+  // Meta del participante
+  html+='<div class="inf-meta" style="padding-left:8px">';
+  var brandLine='Café con Propósito';
+  if(cfg['cfg-programa']) brandLine=cfg['cfg-programa'];
+  html+='<div class="inf-brand">'+brandLine+'</div>';
+  html+='<div class="inf-nombre">'+p.nombre+'</div>';
+  if(p.cargo) html+='<div class="inf-cargo">'+p.cargo+'</div>';
+  if(cfg['cfg-empresa']||cfg['cfg-responsable']){
+    html+='<div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,.4);line-height:1.8">';
+    if(cfg['cfg-empresa']) html+='<span style="color:rgba(255,255,255,.6);font-weight:700">'+cfg['cfg-empresa']+'</span>';
+    if(cfg['cfg-responsable']) html+=' &nbsp;·&nbsp; TH: '+cfg['cfg-responsable'];
+    if(cfg['cfg-fecha']) html+='<br>Taller: '+formatFechaCfg(cfg['cfg-fecha']);
+    html+='</div>';
+  } else {
+    html+='<div class="inf-fecha">Taller: '+p.fecha+'</div>';
+  }
+  html+='</div>';
+  // Elemento hero
+  html+='<div class="inf-elemento-hero">';
+  html+='<span class="inf-el-emoji">'+elemSVG(p.elemento,32)+'</span>';
+  html+='<div class="inf-el-name">'+e.nombre+'</div>';
+  html+='<div class="inf-el-tipo">'+e.tipo+'</div>';
+  html+='</div>';
+  html+='</div>';
+
+  // ── CUERPO con padding ──
+  html+='<div class="inf-body">';
+
+  // ── OBJETIVOS Y METODOLOGÍA ──
+  html+='<div class="inf-sec" style="background:#F8FAFC;border:1px solid #E2EAF4;border-radius:6px;padding:18px 20px;margin-bottom:24px">';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">';
+  // Objetivos
+  html+='<div>';
+  html+='<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--azul);font-weight:800;margin-bottom:10px;opacity:.6">Objetivos del Taller</div>';
+  html+='<ul style="list-style:none;padding:0;margin:0">';
+  ['Identificar el estilo de liderazgo dominante de cada participante','Reconocer fortalezas y puntos de desarrollo personal','Comprender la dinámica de elementos opuestos en el equipo','Diseñar un plan de formación individual de 6 meses','Integrar el lenguaje del café como metáfora de liderazgo'].forEach(function(obj){
+    html+='<li style="display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:#2A3B52;line-height:1.5"><span style="color:var(--azul);font-weight:700;flex-shrink:0">·</span>'+obj+'</li>';
+  });
+  html+='</ul>';
+  html+='</div>';
+  // Metodología
+  html+='<div style="border-left:1px solid #D8E2EE;padding-left:20px">';
+  html+='<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--azul);font-weight:800;margin-bottom:10px;opacity:.6">Metodología Aplicada</div>';
+  html+='<ul style="list-style:none;padding:0;margin:0">';
+  [
+    {t:'Evaluación 4 elementos',d:'Cuestionario de autopercepción con puntajes diferenciados por elemento'},
+    {t:'Metáfora del café',d:'Marco conceptual que conecta métodos de preparación con estilos de liderazgo'},
+    {t:'Análisis de opuestos',d:'Identificación de tensiones naturales y oportunidades de complementariedad'},
+    {t:'Plan individual 6 meses',d:'Ruta de formación personalizada en tres fases progresivas'}
+  ].forEach(function(m){
+    html+='<li style="margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--azul)">'+m.t+'</div><div style="font-size:11px;color:#5A7090;line-height:1.4;margin-top:1px">'+m.d+'</div></li>';
+  });
+  html+='</ul>';
+  html+='</div>';
+  html+='</div>';
+  html+='</div>';
+
+  // ── 1. PERFIL ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil de Liderazgo</div>';
+  html+='<div style="font-size:17px;font-weight:700;color:var(--azul);margin-bottom:4px">'+pf.titulo+'</div>';
+  html+='<div style="font-size:12px;color:var(--azul);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;opacity:.6">'+pf.subtitulo+'</div>';
+  html+='<div class="perfil-desc">'+pf.desc+'</div>';
+  if(pf.fortalezas&&pf.fortalezas.length){
+    html+='<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Tus fortalezas naturales</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
+    pf.fortalezas.forEach(function(f){html+='<span class="inf-chip">'+f+'</span>';});
+    html+='</div></div>';
+  }
+  html+='</div>';
+
+  // ── 2. MAPA DE ELEMENTOS ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>Mapa de Elementos</div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">';
+  html+='<div style="flex:1;min-width:130px;background:#EEF2F8;border:2px solid var(--azul);border-radius:8px;padding:14px;text-align:center"><div style="display:flex;justify-content:center;color:var(--azul)">'+elemSVG(p.elemento,32)+'</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--azul);margin-top:6px;opacity:.6">PRINCIPAL</div><div style="font-size:13px;font-weight:700;color:var(--azul);margin-top:2px">'+e.nombre+'</div><div style="font-size:11px;color:var(--muted)">Tu energía dominante</div></div>';
+  if(ecomp) html+='<div style="flex:1;min-width:130px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center"><div style="display:flex;justify-content:center;color:var(--azul-lt)">'+elemSVG(p.complemento,32)+'</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:6px">COMPLEMENTO</div><div style="font-size:13px;font-weight:700;color:var(--azul);margin-top:2px">'+ecomp.nombre+'</div><div style="font-size:11px;color:var(--muted)">Tu apoyo natural</div></div>';
+  if(eopp) html+='<div style="flex:1;min-width:130px;background:#fff;border:2px dashed var(--border);border-radius:8px;padding:14px;text-align:center"><div style="display:flex;justify-content:center;color:var(--border)">'+elemSVG(p.opuesto,32)+'</div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:6px">OPUESTO</div><div style="font-size:13px;font-weight:700;color:var(--muted);margin-top:2px">'+eopp.nombre+'</div><div style="font-size:11px;color:var(--muted)">Tu mayor desafío</div></div>';
+  html+='</div>';
+
+  // Puntajes
+  ['A','B','C','D'].forEach(function(k){
+    var el=ELEM[k];var v=pts[k]||0;
+    var pct=Math.round((v-minV)/rango*100);
+    var isP=(k===p.elemento);var isO=(k===p.opuesto);
+    html+='<div class="pscore-row">';
+    html+='<span class="pscore-icon" style="display:flex;align-items:center">'+elemSVG(k,16)+'</span>';
+    html+='<span class="pscore-name" style="'+(isP?'font-weight:800;color:var(--azul);':isO?'color:#A0B0C5;':'')+'">'+el.nombre+(isP?' ★':isO?' ↓':'')+'</span>';
+    html+='<div class="pscore-bar-wrap"><div class="pscore-bar" style="width:'+pct+'%;background:'+(isO?'#D8E2EE':isP?'var(--azul)':'#6B8AB0')+'"></div></div>';
+    html+='<span class="pscore-val" style="color:'+(v<0?'#A0B0C5':'var(--azul)')+'">'+( v>0?'+':'')+v+'</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+
+  // ── 2b. TU EQUIPO ──
+  if(participantes.length>1){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Tu Equipo · Composición por Elementos</div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">Así se distribuyen los elementos en el equipo del taller. Conocer el mapa completo te ayuda a entender las dinámicas colectivas.</div>';
+    html+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html+='<thead><tr style="background:var(--azul);color:#fff"><th style="padding:8px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase">Nombre</th><th style="padding:8px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase">Cargo</th><th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Elemento</th><th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Agua</th><th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Fuego</th><th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Tierra</th><th style="padding:8px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Aire</th></tr></thead>';
+    html+='<tbody>';
+    participantes.forEach(function(part,pi){
+      var isMe=(part===p);
+      var ep=ELEM[part.elemento]||{nombre:'?'};
+      var rowBg=isMe?'var(--gold-pale)':'pi%2===0?"#F7FAFD":"#fff"';
+      var bg=isMe?'background:#EEF2F8;border-left:3px solid var(--azul)':'background:'+(pi%2===0?'#F7FAFD':'#fff');
+      html+='<tr style="'+bg+'">';
+      html+='<td style="padding:7px 10px;border-bottom:1px solid var(--border);font-weight:'+(isMe?'700':'400')+';color:var(--azul)">'+part.nombre+(isMe?' ◀':'')+'</td>';
+      html+='<td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--muted)">'+part.cargo+'</td>';
+      html+='<td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:center"><span style="display:inline-flex;align-items:center;gap:3px;font-weight:'+(isMe?'700':'400')+'">'+elemSVG(part.elemento,11)+ep.nombre+'</span></td>';
+      ['A','B','C','D'].forEach(function(k){
+        var v=part.puntajes[k]||0;
+        var isMax=(part.elemento===k);
+        html+='<td style="padding:7px 10px;border-bottom:1px solid var(--border);text-align:center;font-weight:'+(isMax?'700':'400')+';color:'+(isMax?'var(--azul)':v<0?'#A0B0C5':'#4A6080')+'">'+(v>0?'+':'')+v+'</td>';
+      });
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+    html+='</div>';
+  }
+
+  // ── 3. LO QUE TE HACE ÚNICO COMO LÍDER ──
+  if(pf.mejoras_lider&&pf.mejoras_lider.length){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M12 2.5c0 0-6.5 5.5-6.5 11.5 0 3.58 2.92 6.5 6.5 6.5s6.5-2.92 6.5-6.5c0-6-6.5-11.5-6.5-11.5zm0 15.5c-2.21 0-4-1.79-4-4 0-1.35.69-2.54 1.72-3.25.54.93.84 1.99.84 3.07 0 .1.01.2.01.3.18-.06.37-.12.56-.12.83 0 1.5.67 1.5 1.5 0 .12-.02.23-.05.34.47-.55.75-1.26.75-2.03 0-.33-.05-.65-.13-.96.77.71 1.26 1.72 1.26 2.84 0 2.21-1.79 4-4.46 4z"/></svg>Qué Debes Desarrollar como Líder '+elemSVG(p.elemento,14)+' '+e.nombre+'</div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">Estas son las áreas de crecimiento específicas de tu estilo de liderazgo. No son debilidades — son el siguiente nivel de tu potencial.</div>';
+    html+='<ul class="comp-list">';
+    pf.mejoras_lider.forEach(function(m){html+='<li>'+m+'</li>';});
+    html+='</ul>';
+    html+='</div>';
+  }
+
+  // ── 4. TU OPUESTO: TENSIÓN Y OPORTUNIDAD ──
+  if(eopp&&pf.opuesto_tension){
+    var ot=pf.opuesto_tension;
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>Tu Elemento Opuesto: '+elemSVG(p.opuesto,14)+' '+eopp.nombre+'</div>';
+    html+='<div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:16px;margin-bottom:14px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--azul-lt);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">La tensión natural</div>';
+    var textoTension=ot[p.opuesto]||ot.desc||Object.values(ot).find(function(v){return typeof v==='string';})||'';
+    html+='<div style="font-size:13px;line-height:1.7;color:var(--azul)">'+textoTension+'</div>';
+    html+='</div>';
+    html+='<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Cómo actuar frente a tu opuesto</div>';
+    html+='<ul class="pot-list">';
+    (ot.trabajar||[]).forEach(function(t){html+='<li>'+t+'</li>';});
+    html+='</ul>';
+    html+='</div>';
+  }
+
+  // ── 5. CÓMO IDENTIFICAR TU OPUESTO EN EL EQUIPO ──
+  if(eopp&&pf.identificar_opuesto&&pf.identificar_opuesto.length){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Cómo Identificar a '+elemSVG(p.opuesto,14)+' '+eopp.nombre+' en Tu Equipo</div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">Señales que revelan que estás frente a un líder o colaborador de elemento '+eopp.nombre+':</div>';
+    html+='<ul class="pot-list">';
+    pf.identificar_opuesto.forEach(function(s){html+='<li>'+s+'</li>';});
+    html+='</ul>';
+    html+='</div>';
+  }
+
+  // ── 6. CÓMO MANEJAR A TU OPUESTO ──
+  if(eopp&&pf.manejo_opuesto&&pf.manejo_opuesto.length){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Cómo Liderar a las Personas '+elemSVG(p.opuesto,14)+' '+eopp.nombre+'</div>';
+    html+='<div style="background:#F3F6FA;border:1px solid #D0D8E8;border-radius:8px;padding:16px;margin-bottom:14px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--azul);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:var(--azul);opacity:.6;vertical-align:middle;margin-right:4px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Claves de manejo y colaboración</div>';
+    html+='<div style="font-size:12px;color:var(--azul-mid);line-height:1.6">Tu relación con '+eopp.nombre+' tiene el mayor potencial de tensión — y también el mayor potencial de complementariedad. Estas estrategias convierten esa tensión en una ventaja competitiva del equipo.</div>';
+    html+='</div>';
+    html+='<ul class="pot-list">';
+    pf.manejo_opuesto.forEach(function(m){html+='<li>'+m+'</li>';});
+    html+='</ul>';
+    html+='</div>';
+  }
+
+  // ── 7. COMPETENCIAS A DESARROLLAR ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-12.5c-2.49 0-4.5 2.01-4.5 4.5S9.51 16.5 12 16.5s4.5-2.01 4.5-4.5S14.49 7.5 12 7.5zm0 5.5c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>Competencias Clave a Desarrollar</div>';
+  html+='<ul class="comp-list">';
+  pf.competencias.forEach(function(c){html+='<li>'+c+'</li>';});
+  html+='</ul>';
+  html+='</div>';
+
+  // ── 8. CÓMO POTENCIAR EL EQUIPO ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zm-6 0h5v5H6zm6 4h4v6h-4z"/></svg>Cómo Potenciar Tu Equipo desde '+elemSVG(p.elemento,14)+' '+e.nombre+'</div>';
+  html+='<ul class="pot-list">';
+  pf.potenciar.forEach(function(c){html+='<li>'+c+'</li>';});
+  html+='</ul>';
+  html+='</div>';
+
+  // ── 9b. TU CAFÉ ──
+  var cafe=CAFE[p.elemento];
+  if(cafe){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 8c0 2.76-2.24 5-5 5s-5-2.24-5-5V5h10v3zm2.5 1H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 9 18.5 9zM4 19h16v2H4v-2z"/></svg>Tu Café · La Metáfora que te Define</div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-bottom:14px">El café no es solo una bebida — es un lenguaje. Tu forma de liderar tiene un método de preparación que te representa perfectamente.</div>';
+
+    // Método recomendado
+    html+='<div style="background:#F3F6FA;border:1px solid #D0D8E8;border-radius:10px;padding:18px;margin-bottom:12px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    html+='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--azul);opacity:.6;flex-shrink:0"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 8c0 2.76-2.24 5-5 5s-5-2.24-5-5V5h10v3zm2.5 1H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 9 18.5 9zM4 19h16v2H4v-2z"/></svg>';
+    html+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--azul)">Tu método · '+cafe.metodo+'</div>';
+    html+='</div>';
+    html+='<div style="font-size:13px;color:var(--azul);line-height:1.7;margin-bottom:10px">'+cafe.metodo_desc+'</div>';
+    html+='<div style="font-size:12px;color:var(--muted);font-style:italic;border-top:1px solid #D8E2EE;padding-top:8px"><strong style="color:var(--azul);font-style:normal;opacity:.7">Perfil en taza:</strong> '+cafe.nota+'</div>';
+    html+='</div>';
+
+    // Analogía
+    html+='<div style="background:var(--azul);color:rgba(255,255,255,.8);border-radius:10px;padding:16px;margin-bottom:12px">';
+    html+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:8px">La metáfora</div>';
+    html+='<div style="font-size:13px;line-height:1.7;font-style:italic">"'+cafe.analogia+'"</div>';
+    html+='</div>';
+
+    // Ritual
+    html+='<div style="background:#F8FAFC;border:1px solid #D8E2EE;border-radius:8px;padding:14px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start">';
+    html+='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--azul);opacity:.5;flex-shrink:0;margin-top:2px"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>';
+    html+='<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px">Tu ritual de liderazgo</div>';
+    html+='<div style="font-size:13px;color:var(--azul);line-height:1.6">'+cafe.ritual+'</div></div>';
+    html+='</div>';
+
+    // Método que no tanto
+    html+='<div style="background:#fff;border:1px dashed var(--border);border-radius:8px;padding:14px;display:flex;gap:12px;align-items:flex-start">';
+    html+='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--muted);flex-shrink:0;margin-top:2px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>';
+    html+='<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px">Método que te cuesta más · '+cafe.no_tanto+'</div>';
+    html+='<div style="font-size:12px;color:var(--muted);line-height:1.6">'+cafe.no_tanto_desc+'</div></div>';
+    html+='</div>';
+    html+='</div>';
+  }
+
+  // ── 9. PLAN DE FORMACIÓN INDIVIDUAL ──
+  if(pf.plan_formacion&&pf.plan_formacion.length){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Plan de Formación Individual · 6 meses</div>';
+    var cfgPF=getCfg();
+    var empresaLabelPF=cfgPF['cfg-empresa']?'de '+cfgPF['cfg-empresa']:'del equipo';
+    html+='<div style="font-size:12px;color:var(--muted);margin-bottom:14px">Ruta de desarrollo diseñada para líderes '+e.nombre+' '+empresaLabelPF+'. Cada fase construye sobre la anterior.</div>';
+    pf.plan_formacion.forEach(function(fase,fi){
+      var colores=['#EEF2F8','#EEF4FF','#EDF7F2'];
+      var bordes=['#B0C4DE','#93B4E0','#8FC9AE'];
+      html+='<div style="background:'+colores[fi]+';border:1px solid '+bordes[fi]+';border-radius:8px;padding:16px;margin-bottom:10px">';
+      html+='<div style="font-size:12px;font-weight:700;color:var(--azul);margin-bottom:10px">'+fase.fase+'</div>';
+      html+='<ul class="comp-list">';
+      fase.items.forEach(function(it){html+='<li>'+it+'</li>';});
+      html+='</ul></div>';
+    });
+    html+='</div>';
+  }
+
+
+  // ── ACCIONES PERSONALES POR ELEMENTO ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm-.5-5H11V8h1.5v6zm0 2H11v-1.5h1.5V16z"/></svg>Acciones Personales · Bienestar y Hábitos para tu Elemento</div>';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">El liderazgo comienza desde adentro. Estas recomendaciones están calibradas para la energía de tu elemento y potencian tu rendimiento desde el cuidado personal.</div>';
+  var accionesPE={
+    A:[
+      {i:'📖',t:'Lectura',d:'Novelas de desarrollo humano, psicología positiva o espiritualidad — alimentan tu profundidad emocional. Autores: Brené Brown, Viktor Frankl, Daniel Goleman.'},
+      {i:'🏊',t:'Deporte',d:'Natación, yoga o pilates: actividades de flujo y conexión mente-cuerpo. El movimiento rítmico calma tu mente y recarga tu energía.'},
+      {i:'🥗',t:'Alimentación',d:'Alimentos hidratantes y de fácil digestión — frutas, vegetales frescos, sopas. Evita el exceso de cafeína: tu sistema nervioso sensible lo agradece.'},
+      {i:'🧘',t:'Práctica diaria',d:'Meditación guiada o diario de gratitud por las mañanas. 10 minutos contigo mismo antes de dar al mundo cambian la calidad de tu liderazgo.'}
+    ],
+    B:[
+      {i:'📖',t:'Lectura',d:'Biografías de líderes transformadores, estrategia e innovación. Autores: Simon Sinek, Jim Collins, Yuval Noah Harari.'},
+      {i:'🏃',t:'Deporte',d:'Running, ciclismo o deportes de equipo con competencia: activan tu energía y espíritu de superación. La intensidad te revitaliza y canaliza tu fuego.'},
+      {i:'🍗',t:'Alimentación',d:'Proteínas y carbohidratos complejos para sostener tu alta energía — carne, legumbres, cereales integrales. Cuida no saltarte comidas.'},
+      {i:'⏰',t:'Práctica diaria',d:'Una pausa de 5 minutos antes de cada reunión importante: respira, conecta con el propósito y escucha antes de hablar. Tu mayor ganancia está en la pausa.'}
+    ],
+    C:[
+      {i:'📖',t:'Lectura',d:'Gestión de proyectos, finanzas personales, historia o ciencia aplicada. Autores: James Clear, Nassim Taleb, Peter Drucker.'},
+      {i:'🏋',t:'Deporte',d:'Gimnasio con rutina estructurada, senderismo o artes marciales: disciplina corporal que refuerza tu constancia natural.'},
+      {i:'🥦',t:'Alimentación',d:'Dieta equilibrada, horarios fijos y preparación en casa. Prioriza fibra, vegetales y proteínas sin procesar.'},
+      {i:'📋',t:'Práctica diaria',d:'Cada noche: 3 logros del día y 1 cosa que delegarás mañana. Te ayuda a valorar lo completado y soltar el control donde no es necesario.'}
+    ],
+    D:[
+      {i:'📖',t:'Lectura',d:'Filosofía, ciencia ficción, diseño o tendencias emergentes. Autores: Edward de Bono, Daniel Kahneman, Cal Newport.'},
+      {i:'🚴',t:'Deporte',d:'Actividades variadas y al aire libre — escalada, baile, crossfit. Evita la rutina: prueba algo nuevo cada mes para mantener tu motivación.'},
+      {i:'🌿',t:'Alimentación',d:'Snacks inteligentes y comidas ligeras pero frecuentes. Tu mente activa necesita energía constante — frutos secos, frutas, granos.'},
+      {i:'🗒',t:'Práctica diaria',d:'Captura tus ideas al despertar con un cuaderno al lado de la cama. Al final del día, elige UNA tarea que completarás sin interrupciones mañana.'}
+    ]
+  };
+  var misAcciones=accionesPE[p.elemento]||[];
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  misAcciones.forEach(function(ac){
+    html+='<div style="background:#F8FAFC;border:1px solid #D8E2EE;border-radius:8px;padding:13px;display:flex;gap:10px;align-items:flex-start">';
+    html+='<div style="font-size:20px;flex-shrink:0;line-height:1">'+ac.i+'</div>';
+    html+='<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--azul);margin-bottom:3px">'+ac.t+'</div>';
+    html+='<div style="font-size:12px;color:#4A6080;line-height:1.55">'+ac.d+'</div></div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='</div>';
+
+  // ── SALUD MENTAL Y CRECIMIENTO PERSONAL ──
+  html+='<div class="inf-sec" style="background:var(--azul);border-radius:8px;padding:22px 24px;color:rgba(255,255,255,.85)">';
+  html+='<div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);font-weight:700;margin-bottom:14px">Recomendación · Soy Integral</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">';
+  // Salud mental
+  html+='<div>';
+  html+='<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Cuida tu salud mental, no solo tu agenda</div>';
+  html+='<div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7">El liderazgo sostenible requiere bienestar emocional. Considera incorporar acompañamiento psicológico, mindfulness o prácticas de descanso activo en tu rutina semanal. Un líder que se cuida, cuida mejor a su equipo.</div>';
+  html+='</div>';
+  // Anormal
+  html+='<div style="border-left:1px solid rgba(255,255,255,.15);padding-left:20px">';
+  html+='<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Mentoría ∀normal · Crecimiento individual</div>';
+  html+='<div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7">El programa ∀normal es un espacio de mentoría individual diseñado para líderes que quieren ir más allá del rol. Exploramos propósito, identidad y el siguiente nivel de tu potencial — con metodología de Soy Integral.</div>';
+  html+='<div style="margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.4)">anormal.soyintegral.com</div>';
+  html+='</div>';
+  html+='</div>';
+  html+='</div>';
+
+  var cfgFI=getCfg();
+  var footerFI='Café con Propósito'+(cfgFI['cfg-empresa']?' · '+cfgFI['cfg-empresa']:'')+' · Soy Integral';
+  html+='<div style="margin-top:24px;padding:14px 20px;background:var(--azul);display:flex;align-items:center;justify-content:space-between">';
+  html+='<span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)">'+footerFI+'</span>';
+  html+='<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:rgba(255,255,255,.25)"><path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 8c0 2.76-2.24 5-5 5s-5-2.24-5-5V5h10v3zm2.5 1H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 9 18.5 9zM4 19h16v2H4v-2z"/></svg>';
+  html+='</div>';
+
+  html+='</div>'; // end inf-body
+  html+='</div>'; // end informe-page
+  document.getElementById('informe-wrap').innerHTML=html;
+}
+
+// ══════════════════════════════════════
+// PLAN COLECTIVO
+// ══════════════════════════════════════
+function renderColectivo(){
+  var total=participantes.length;
+  var wrap=document.getElementById('colectivo-wrap');
+  if(total===0){
+    wrap.innerHTML='<div class="empty"><div class="empty-icon">🌐</div><div>Agrega participantes para ver el plan colectivo</div></div>';
+    return;
+  }
+
+  var cnt={A:0,B:0,C:0,D:0};
+  var opuestos={A:0,B:0,C:0,D:0};
+  participantes.forEach(function(p){
+    if(cnt[p.elemento]!==undefined) cnt[p.elemento]++;
+    if(p.opuesto&&opuestos[p.opuesto]!==undefined) opuestos[p.opuesto]++;
+  });
+
+  // Calcular pares de tensión presentes
+  var tensionesPresentes=[];
+  var pares=[['A','B'],['A','D'],['B','C'],['C','D']];
+  pares.forEach(function(par){
+    if(cnt[par[0]]>0&&cnt[par[1]]>0){
+      var key=par[0]+'-'+par[1];
+      tensionesPresentes.push({par:par,desc:TENSIONES[key]||''});
+    }
+  });
+
+  // Elementos ausentes
+  var ausentes=[];
+  ['A','B','C','D'].forEach(function(k){if(cnt[k]===0)ausentes.push(ELEM[k]);});
+
+  // Elemento más opuesto colectivo (el que más líderes tienen como opuesto)
+  var maxOp=Math.max(opuestos.A,opuestos.B,opuestos.C,opuestos.D);
+  var elemOpColectivo=null;
+  if(maxOp>0){
+    ['A','B','C','D'].forEach(function(k){if(opuestos[k]===maxOp)elemOpColectivo=k;});
+  }
+
+  var html='<div class="informe-page">';
+  html+='<div class="inf-topbar">';
+  // Logo Soy Integral en colectivo
+  html+='<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">';
+  html+='<svg viewBox="0 0 60 60" style="width:44px;height:44px;" fill="none">';
+  html+='<path d="M10 30 C10 16 50 16 50 30" stroke="rgba(255,255,255,0.85)" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  html+='<path d="M10 30 C10 44 50 44 50 30" stroke="rgba(255,255,255,0.85)" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  html+='<path d="M16 30 C16 23 22 21 22 30 C22 39 16 37 16 30" stroke="rgba(255,255,255,0.55)" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  html+='<path d="M44 30 C44 23 38 21 38 30 C38 39 44 37 44 30" stroke="rgba(255,255,255,0.55)" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  html+='<circle cx="30" cy="30" r="5" fill="rgba(255,255,255,0.9)"/>';
+  html+='</svg>';
+  html+='<div style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);text-align:center;font-weight:600">SOY INTEGRAL</div>';
+  html+='</div>';
+  html+='<div style="width:1px;background:rgba(255,255,255,.15);margin:0 4px;align-self:stretch"></div>';
+  html+='<div class="inf-meta" style="padding-left:8px">';
+  var cfgC=getCfg();
+  var brandColectivo='Café con Propósito'+(cfgC['cfg-programa']?' · '+cfgC['cfg-programa']:'');
+  var equipoLabel=cfgC['cfg-empresa']?'Equipo de Liderazgo · '+cfgC['cfg-empresa']:'Equipo de Liderazgo';
+  html+='<div class="inf-brand">'+brandColectivo+'</div>';
+  html+='<div class="inf-nombre">Plan de Desarrollo Colectivo</div>';
+  html+='<div class="inf-cargo">'+equipoLabel+'</div>';
+  html+='<div class="inf-fecha">Basado en '+total+' líderes · Taller '+new Date().toLocaleDateString('es-CO')+'</div>';
+  html+='</div></div>';
+
+  // ── OBJETIVOS Y METODOLOGÍA (colectivo) ──
+  html+='<div class="inf-body">';
+  html+='<div class="inf-sec" style="background:#F8FAFC;border:1px solid #E2EAF4;border-radius:6px;padding:18px 20px;margin-bottom:24px">';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">';
+  html+='<div>';
+  html+='<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--azul);font-weight:800;margin-bottom:10px;opacity:.6">Objetivos del Taller</div>';
+  html+='<ul style="list-style:none;padding:0;margin:0">';
+  ['Mapear la diversidad de estilos de liderazgo del equipo','Identificar tensiones activas y oportunidades de complementariedad','Diseñar un plan colectivo de desarrollo para los próximos 90 días','Establecer un lenguaje común de liderazgo basado en los cuatro elementos','Conectar a cada líder con su perfil individual y su papel en el equipo'].forEach(function(obj){
+    html+='<li style="display:flex;gap:8px;margin-bottom:6px;font-size:12px;color:#2A3B52;line-height:1.5"><span style="color:var(--azul);font-weight:700;flex-shrink:0">·</span>'+obj+'</li>';
+  });
+  html+='</ul>';
+  html+='</div>';
+  html+='<div style="border-left:1px solid #D8E2EE;padding-left:20px">';
+  html+='<div style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--azul);font-weight:800;margin-bottom:10px;opacity:.6">Metodología Aplicada</div>';
+  html+='<ul style="list-style:none;padding:0;margin:0">';
+  [
+    {t:'Evaluación 4 elementos',d:'Cuestionario de autopercepción aplicado individualmente a cada líder'},
+    {t:'Metáfora del café',d:'Marco conceptual que conecta métodos de preparación con estilos de liderazgo'},
+    {t:'Análisis sistémico del equipo',d:'Lectura de la composición, tensiones y punto ciego colectivo'},
+    {t:'Plan de desarrollo 90 días',d:'Ruta de formación integrada individual y colectiva'}
+  ].forEach(function(m){
+    html+='<li style="margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--azul)">'+m.t+'</div><div style="font-size:11px;color:#5A7090;line-height:1.4;margin-top:1px">'+m.d+'</div></li>';
+  });
+  html+='</ul>';
+  html+='</div>';
+  html+='</div>';
+  html+='</div>';
+
+  // ── 0. TABLA CONSOLIDADA DE PARTICIPANTES ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.24.73-4.29 1.9L12 6H20zM0 6l4.5 7 7.5-7H0zm22 0h-5l4.5 7L22 6zm-5.14 1.19L12 14 7.14 7.19A6.994 6.994 0 0 0 5 12c0 3.87 3.13 7 7 7s7-3.13 7-7c0-1.89-.76-3.6-1.99-4.86z"/></svg>Participantes del Taller · Ficha Completa</div>';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px">Registro consolidado de los '+total+' líderes evaluados, con su perfil de elementos y puntajes individuales.</div>';
+  html+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+  html+='<thead><tr style="background:var(--azul);color:#fff">';
+  html+='<th style="padding:9px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase">#</th>';
+  html+='<th style="padding:9px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase">Nombre</th>';
+  html+='<th style="padding:9px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase">Cargo</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Elemento</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Opuesto</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">'+elemSVG('A',10)+'</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">'+elemSVG('B',10)+'</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">'+elemSVG('C',10)+'</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">'+elemSVG('D',10)+'</th>';
+  html+='<th style="padding:9px 10px;text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase">Café</th>';
+  html+='</tr></thead><tbody>';
+  participantes.forEach(function(part,pi){
+    var ep=ELEM[part.elemento]||{nombre:'?'};
+    var eop=part.opuesto?ELEM[part.opuesto]:null;
+    var cafeP=CAFE[part.elemento];
+    var rowBg=pi%2===0?'#F7FAFD':'#fff';
+    html+='<tr style="background:'+rowBg+'">';
+    html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px">'+(pi+1)+'</td>';
+    html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-weight:700;color:var(--azul)">'+part.nombre+'</td>';
+    html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--muted)">'+part.cargo+'</td>';
+    html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center"><span style="display:inline-flex;align-items:center;gap:3px;font-weight:700;color:var(--gold)">'+elemSVG(part.elemento,11)+ep.nombre+'</span></td>';
+    html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;color:var(--muted);font-size:11px">'+(eop?'<span style="display:inline-flex;align-items:center;gap:3px">'+elemSVG(part.opuesto,11)+eop.nombre+'</span>':'—')+'</td>';
+    ['A','B','C','D'].forEach(function(k){
+      var v=part.puntajes[k]||0;
+      var isMax=(part.elemento===k);
+      html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;font-weight:'+(isMax?'700':'400')+';color:'+(isMax?'var(--gold)':v<0?'var(--muted)':'var(--azul)')+'">'+(v>0?'+':'')+v+'</td>';
+    });
+    html+='<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted)">'+(cafeP?cafeP.metodo:'—')+'</td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  html+='</div>';
+
+  // ── 1. COMPOSICIÓN ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>Composición del Equipo por Elemento</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">';
+  ['A','B','C','D'].forEach(function(k){
+    var e=ELEM[k];
+    var pct=total>0?Math.round(cnt[k]/total*100):0;
+    var isAus=cnt[k]===0;
+    html+='<div style="background:'+(isAus?'var(--azul-bg)':'var(--gold-pale)')+';border:1px '+(isAus?'dashed':'solid')+' var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px">';
+    html+='<div style="display:flex;align-items:center;color:'+(isAus?'var(--border)':'var(--gold)')+';">'+(isAus?'<span style="opacity:.35">':'')+elemSVG(k,24)+(isAus?'</span>':'')+'</div>';
+    html+='<div style="flex:1"><div style="font-size:12px;font-weight:700;color:'+(isAus?'var(--muted)':'var(--azul)')+'">'+e.nombre+'</div>';
+    html+='<div style="font-size:11px;color:var(--muted)">'+(isAus?'Ausente en el equipo':cnt[k]+' líder'+(cnt[k]>1?'es':'')+' · '+pct+'%')+'</div></div>';
+    html+='<div style="font-size:22px;font-weight:700;color:'+(isAus?'var(--border)':'var(--gold)')+'">'+cnt[k]+'</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+
+  // Diagnóstico de equilibrio
+  var nActivos=['A','B','C','D'].filter(function(k){return cnt[k]>0;}).length;
+  var diagColor=nActivos===4?'#E8F5E9':nActivos>=3?'#FFF8E1':'#FFEBEE';
+  var diagBorder=nActivos===4?'#A5D6A7':nActivos>=3?'#FFE082':'#EF9A9A';
+  var diagTexto=nActivos===4?
+    '✅ <strong>Equipo completo:</strong> Los cuatro elementos están presentes. Esta diversidad de estilos es una ventaja competitiva — el reto es crear las condiciones para que cada elemento pueda expresarse con plenitud y complementarse en lugar de colisionar.':
+    nActivos===3?
+    '⚠️ <strong>Equipo casi completo:</strong> Tienen tres de los cuatro elementos. Los elementos ausentes ('+ausentes.map(function(a){return a.emoji+' '+a.nombre;}).join(', ')+') representan un punto ciego colectivo. Conviene identificar quién puede aportar esa perspectiva.':
+    '🔴 <strong>Equipo homogéneo:</strong> Solo '+nActivos+' elemento'+(nActivos>1?'s':'')+' presente'+(nActivos>1?'s':'')+'. Fortaleza en la cohesión, riesgo en la uniformidad. Busquen deliberadamente perspectivas que cuestionen sus supuestos compartidos.';
+  html+='<div style="background:'+diagColor+';border:1px solid '+diagBorder+';border-radius:8px;padding:14px;font-size:13px;line-height:1.7;color:var(--azul)">'+diagTexto+'</div>';
+  html+='</div>';
+
+  // ── 2. FORTALEZAS COLECTIVAS ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></svg>Fortalezas Colectivas del Equipo</div>';
+  html+='<ul class="comp-list">';
+  if(cnt.A>0) html+='<li><strong>Escucha activa y empatía organizacional</strong> — los líderes Agua aseguran que nadie quede atrás en los procesos de cambio y que el clima emocional se cuide como indicador de gestión</li>';
+  if(cnt.B>0) html+='<li><strong>Visión, urgencia y capacidad de movilización</strong> — los líderes Fuego mantienen la energía del equipo orientada hacia el resultado y contagian el sentido de propósito</li>';
+  if(cnt.C>0) html+='<li><strong>Estructura, consistencia y ejecución confiable</strong> — los líderes Tierra garantizan que los compromisos se cumplan, los sistemas funcionen y la calidad se sostenga</li>';
+  if(cnt.D>0) html+='<li><strong>Innovación, adaptabilidad y pensamiento creativo</strong> — los líderes Aire abren caminos donde otros ven obstáculos y mantienen al equipo actualizado frente al cambio del sector energético</li>';
+  html+='</ul>';
+  html+='</div>';
+
+
+  // ── PROFESIONES POR ELEMENTO EN EL EQUIPO ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.24.73-4.29 1.9L12 6H20zM0 6l4.5 7 7.5-7H0zm22 0h-5l4.5 7L22 6zm-5.14 1.19L12 14 7.14 7.19A6.994 6.994 0 0 0 5 12c0 3.87 3.13 7 7 7s7-3.13 7-7c0-1.89-.76-3.6-1.99-4.86z"/></svg>Roles y Profesiones Afines por Elemento</div>';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Cada elemento tiende a destacar en ciertos roles organizacionales. Esta lectura ayuda a asignar responsabilidades y proyectos según las energías naturales del equipo.</div>';
+  var profesionesPE={
+    A:{label:'Agua',roles:['Gestión de talento humano y bienestar organizacional','Psicología organizacional y coaching','Comunicaciones internas y cultura corporativa','Servicio al cliente y experiencia de usuario','Mediación, resolución de conflictos y RSE','Formación, capacitación y aprendizaje organizacional']},
+    B:{label:'Fuego',roles:['Gerencia general, dirección ejecutiva y CEO','Ventas, desarrollo de negocio y comercial','Emprendimiento, innovación y nuevos mercados','Marketing estratégico y posicionamiento de marca','Liderazgo de proyectos de alta urgencia','Vocería pública y relaciones institucionales']},
+    C:{label:'Tierra',roles:['Operaciones, logística y cadena de suministro','Finanzas, contabilidad y control de gestión','Calidad, HSEQ y cumplimiento normativo','Ingeniería de proyectos y construcción','Administración y procesos organizacionales','Auditoría interna y gestión de riesgos']},
+    D:{label:'Aire',roles:['Tecnología, sistemas y transformación digital','Diseño, creatividad e innovación de producto','Investigación, desarrollo y proyectos de futuro','Consultoría estratégica y análisis de tendencias','Comunicaciones externas, contenido y storytelling','Planeación estratégica y escenarios futuros']}
+  };
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">';
+  ['A','B','C','D'].forEach(function(k){
+    if(cnt[k]===0) return;
+    var pData=profesionesPE[k];
+    var eEl=ELEM[k];
+    var membros=participantes.filter(function(pp){return pp.elemento===k;}).map(function(pp){return pp.nombre.split(' ')[0];});
+    html+='<div style="background:#F8FAFC;border:1px solid #D8E2EE;border-radius:8px;padding:14px">';
+    html+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px">';
+    html+='<span style="display:flex;align-items:center;color:var(--azul)">'+elemSVG(k,16)+'</span>';
+    html+='<div><div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--azul)">'+eEl.nombre+'</div>';
+    html+='<div style="font-size:10px;color:var(--muted)">'+membros.join(', ')+'</div></div>';
+    html+='</div>';
+    html+='<ul style="list-style:none;padding:0;margin:0">';
+    pData.roles.forEach(function(rol){
+      html+='<li style="font-size:11px;color:#4A6080;margin-bottom:4px;line-height:1.45;display:flex;gap:6px"><span style="color:var(--azul);opacity:.4;flex-shrink:0">›</span>'+rol+'</li>';
+    });
+    html+='</ul>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='</div>';
+
+  // ── 3. TENSIONES ACTIVAS ──
+  if(tensionesPresentes.length>0){
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>Tensiones Activas en el Equipo</div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px">Estas tensiones son naturales y saludables cuando se gestionan con consciencia. Ignorarlas genera fricción; activarlas genera innovación.</div>';
+    tensionesPresentes.forEach(function(t){
+      var e0=ELEM[t.par[0]];var e1=ELEM[t.par[1]];
+      html+='<div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:8px;padding:12px;margin-bottom:8px">';
+      html+='<div style="font-size:13px;font-weight:700;color:var(--azul);margin-bottom:6px;display:flex;align-items:center;gap:5px">'+elemSVG(t.par[0],14)+e0.nombre+' <span style="color:var(--gold)">↔</span> '+elemSVG(t.par[1],14)+e1.nombre+'</div>';
+      html+='<div style="font-size:12px;color:var(--azul-mid);line-height:1.6">'+t.desc+'</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+
+  // ── 4. PUNTO CIEGO COLECTIVO ──
+  if(elemOpColectivo){
+    var eoc=ELEM[elemOpColectivo];
+    html+='<div class="inf-sec">';
+    html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Punto Ciego Colectivo: '+elemSVG(elemOpColectivo,14)+' '+eoc.nombre+'</div>';
+    html+='<div style="background:#FFEBEE;border:1px solid #EF9A9A;border-radius:8px;padding:14px;margin-bottom:12px">';
+    html+='<div style="font-size:13px;line-height:1.7;color:var(--azul)"><strong>'+opuestos[elemOpColectivo]+' de '+total+' líderes</strong> tienen a '+elemSVG(elemOpColectivo,13)+' '+eoc.nombre+' como su elemento opuesto. Esto significa que la energía de '+eoc.nombre+' es la más subestimada o resistida colectivamente en el equipo.</div>';
+    html+='</div>';
+    var acciones={
+      A:'El equipo puede tender a la acción sin la suficiente escucha. Crear protocolos de check-in emocional y espacios de conversación profunda antes de decidir.',
+      B:'El equipo puede tender a la cautela y el análisis. Crear rituales de urgencia saludable: ¿cuándo es suficiente análisis? ¿cuándo hay que lanzarse?',
+      C:'El equipo puede tender a la improvisación y al cambio constante. Invertir en sistemas, procesos y compromisos de largo plazo que den previsibilidad.',
+      D:'El equipo puede tender a la ejecución sin cuestionamiento. Crear espacios de ideación y exploración donde se permita pensar fuera del manual.'
+    };
+    html+='<div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Acción correctiva recomendada</div>';
+    html+='<div style="font-size:13px;line-height:1.7;color:var(--azul);background:var(--gold-pale);border-left:4px solid var(--gold);padding:12px;border-radius:0 6px 6px 0">'+(acciones[elemOpColectivo]||'')+'</div>';
+    html+='</div>';
+  }
+
+  // ── 5. PLAN DE FORMACIÓN COLECTIVO 90 DÍAS ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Plan de Formación del Equipo · 90 días</div>';
+  var empresaLabelC=cfgC['cfg-empresa']?'el equipo de liderazgo de '+cfgC['cfg-empresa']:'el equipo de liderazgo';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:14px">Ruta de desarrollo diseñada para '+empresaLabelC+'. Combina trabajo individual con dinámicas colectivas.</div>';
+
+  var fases=[
+    {
+      label:'Fase 1 · Mes 1: Reconocimiento y lenguaje común',
+      color:'var(--gold-pale)',borde:'var(--gold)',
+      items:[
+        'Socializar los resultados del taller Café con Propósito con todo el equipo: cada líder comparte su elemento y su opuesto',
+        'Definir un "mapa de elementos" visible del equipo: quién es quién y qué aporta cada uno',
+        'Taller interno (2h): "Cómo me ve mi elemento opuesto" — ejercicio de perspectiva',
+        'Cada líder elige un hábito de desarrollo personal basado en su plan individual de 6 meses',
+        'Establecer el ritual semanal de check-in: 10 minutos al inicio de cada reunión para nombrar el clima emocional del equipo'
+      ]
+    },
+    {
+      label:'Fase 2 · Mes 2: Trabajo con las tensiones',
+      color:'#EEF4FF',borde:'#93B4E0',
+      items:[
+        'Diseñar "duplas de desarrollo": parejas de elementos opuestos que se dan feedback mensual entre sí',
+        'Taller interno (3h): "Cómo colaborar con mi opuesto" — casos reales del equipo',
+        'Revisar la estructura de los equipos de proyecto: ¿hay diversidad de elementos en cada iniciativa clave?',
+        'Implementar el protocolo "antes de decidir": cada decisión estratégica pasa por al menos dos perspectivas de elementos distintos',
+        'Primer ciclo de feedback 360 basado en elementos: cada líder recibe retroalimentación de su equipo'
+      ]
+    },
+    {
+      label:'Fase 3 · Mes 3: Integración y cultura de liderazgo',
+      color:'#EDF7F2',borde:'#8FC9AE',
+      items:[
+        'Retrospectiva colectiva (2h): ¿qué hemos aprendido de nuestros opuestos? ¿qué ha cambiado en la dinámica del equipo?',
+        'Diseñar el "Decálogo de Liderazgo del Equipo": compromisos colectivos basados en los cuatro elementos',
+        'Cada líder presenta a su equipo su plan de formación individual de 6 meses y pide apoyo específico',
+        'Definir las métricas de liderazgo para el siguiente trimestre: indicadores de bienestar + indicadores de desempeño',
+        'Celebrar: nombrar públicamente los avances de cada líder y lo que el equipo ha construido juntos en 90 días'
+      ]
+    }
+  ];
+  fases.forEach(function(fase){
+    html+='<div style="background:'+fase.color+';border:1px solid '+fase.borde+';border-radius:8px;padding:16px;margin-bottom:12px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--azul);margin-bottom:10px">'+fase.label+'</div>';
+    html+='<ul class="comp-list">';
+    fase.items.forEach(function(it){html+='<li>'+it+'</li>';});
+    html+='</ul></div>';
+  });
+  html+='</div>';
+
+  // ── 6. PARTICIPANTES ──
+  html+='<div class="inf-sec">';
+  html+='<div class="inf-sec-title"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.24.73-4.29 1.9L12 6H20zM0 6l4.5 7 7.5-7H0zm22 0h-5l4.5 7L22 6zm-5.14 1.19L12 14 7.14 7.19A6.994 6.994 0 0 0 5 12c0 3.87 3.13 7 7 7s7-3.13 7-7c0-1.89-.76-3.6-1.99-4.86z"/></svg>Participantes del Taller</div>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
+  participantes.forEach(function(p){
+    var e=ELEM[p.elemento]||{emoji:'?'};
+    var eo=p.opuesto?ELEM[p.opuesto]:null;
+    html+='<div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;font-size:12px">';
+    html+='<div style="font-weight:700;color:var(--azul);display:flex;align-items:center;gap:4px">'+elemSVG(p.elemento,13)+p.nombre+'</div>';
+    if(p.cargo) html+='<div style="color:var(--muted);font-size:11px">'+p.cargo+'</div>';
+    if(eo) html+='<div style="color:var(--muted);font-size:11px;margin-top:2px;display:flex;align-items:center;gap:3px">Opuesto: '+elemSVG(p.opuesto,11)+eo.nombre+'</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='</div>';
+
+
+  // ── SALUD MENTAL Y ANORMAL (COLECTIVO) ──
+  html+='<div class="inf-sec" style="background:var(--azul);border-radius:8px;padding:22px 24px;color:rgba(255,255,255,.85)">';
+  html+='<div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);font-weight:700;margin-bottom:14px">Recomendación Colectiva · Soy Integral</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">';
+  html+='<div>';
+  html+='<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Prioridad: salud mental del equipo</div>';
+  html+='<div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7">Los mejores equipos invierten tanto en bienestar emocional como en desempeño. Recomendamos establecer espacios regulares de conversación sobre salud mental, reducción de estrés y gestión de la presión — integrados al calendario del equipo, no como excepción.</div>';
+  html+='</div>';
+  html+='<div style="border-left:1px solid rgba(255,255,255,.15);padding-left:20px">';
+  html+='<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Mentoría ∀normal para cada líder</div>';
+  html+='<div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7">Como complemento al desarrollo colectivo, el programa ∀normal ofrece un espacio individual de mentoría para que cada líder profundice en su propósito, identidad y siguiente nivel. Una inversión en la persona que potencia el equipo.</div>';
+  html+='<div style="margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.4)">anormal.soyintegral.com</div>';
+  html+='</div>';
+  html+='</div>';
+  html+='</div>';
+
+  var footerC='Café con Propósito'+(cfgC['cfg-empresa']?' · '+cfgC['cfg-empresa']:'')+' · Soy Integral';
+  html+='<div style="margin-top:20px;padding:14px 16px;background:var(--azul);border-radius:8px;text-align:center;color:var(--gold);font-size:11px;letter-spacing:1.5px;text-transform:uppercase">'+footerC+'</div>';
+
+  html+='</div>'; // end inf-body
+  html+='</div>'; // end informe-page
+  wrap.innerHTML=html;
+}
+
+// ══════════════════════════════════════
+// IMPRIMIR / PDF INFORME INDIVIDUAL
+// ══════════════════════════════════════
+function imprimirInforme(){
+  var wrap=document.getElementById('informe-wrap');
+  if(!wrap||!wrap.querySelector('.informe-page')){
+    alert('Selecciona un participante primero.');
+    return;
+  }
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('print-target');});
+  document.getElementById('tab-informe').classList.add('print-target');
+  var oldTitle=document.title;
+  // Obtener nombre del participante para el título del PDF
+  var sel=document.getElementById('sel-informe');
+  var nombre=sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'Informe';
+  var cfg=getCfg();
+  document.title=nombre+(cfg['cfg-empresa']?' · '+cfg['cfg-empresa']:'')+' · Café con Propósito';
+  window.print();
+  document.title=oldTitle;
+  document.getElementById('tab-informe').classList.remove('print-target');
+}
+
+// ══════════════════════════════════════
+// IMPRIMIR / PDF PLAN COLECTIVO
+// ══════════════════════════════════════
+function imprimirColectivo(){
+  // Asegurar que el colectivo esté renderizado
+  var wrap=document.getElementById('colectivo-wrap');
+  if(!wrap||!wrap.querySelector('.informe-page')){
+    renderColectivo();
+  }
+  // Marcar el tab colectivo como objetivo de impresión
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('print-target');});
+  document.getElementById('tab-colectivo').classList.add('print-target');
+  // Título del documento para el PDF
+  var oldTitle=document.title;
+  var cfg=getCfg();
+  document.title='Plan Colectivo'+(cfg['cfg-empresa']?' · '+cfg['cfg-empresa']:'')+' · Café con Propósito';
+  window.print();
+  document.title=oldTitle;
+  document.getElementById('tab-colectivo').classList.remove('print-target');
+}
+
+// ══════════════════════════════════════
+// SYNC AUTOMÁTICO CON localStorage (test → panel)
+// ══════════════════════════════════════
+
+var _ultimoSyncVisto = '';
+
+function importarDesdeLocalStorage(){
+  try{
+    var lista = JSON.parse(localStorage.getItem('ccp_participantes') || '[]');
+    if(!Array.isArray(lista) || lista.length === 0) return 0;
+    var nuevos = 0;
+    lista.forEach(function(reg){
+      // Evitar duplicados por nombre + fecha cercana
+      var yaExiste = participantes.some(function(p){
+        return p.nombre === reg.nombre && (
+          !reg.fecha || !p.fecha ||
+          Math.abs(new Date(reg.fecha) - new Date(p.fecha)) < 10000
+        );
+      });
+      if(!yaExiste){
+        // Normalizar el registro al formato del panel
+        participantes.push({
+          nombre: reg.nombre || '',
+          cargo: reg.cargo || reg.area || '',
+          elemento: reg.elemento || '',
+          complemento: reg.complemento || '',
+          opuesto: reg.opuesto || '',
+          puntajes: reg.puntuaciones || reg.puntajes || {A:0,B:0,C:0,D:0},
+          evaluacion: reg.evaluacion || [],
+          eval_cultura: reg.eval_cultura || [],
+          fecha: reg.fecha ? new Date(reg.fecha).toLocaleDateString('es-CO') : new Date().toLocaleDateString('es-CO'),
+          _id: reg._id || ''
+        });
+        nuevos++;
+      }
+    });
+    if(nuevos > 0){
+      renderTabla();
+      actualizarSelectInforme();
+      mostrarNotificacionNuevo(nuevos);
+    }
+    return nuevos;
+  }catch(e){ return 0; }
+}
+
+function mostrarNotificacionNuevo(n){
+  var msg = n === 1 ? '¡Nuevo participante recibido!' : '¡' + n + ' nuevos participantes recibidos!';
+  mostrarMsg('ok', '📲 ' + msg);
+  // Breve flash visual en la pestaña de participantes
+  var tab = document.querySelector('.tab.active') || document.querySelector('.tab');
+  if(tab){ tab.style.transition='background 0.3s'; tab.style.background='var(--verde,#2d9b55)'; setTimeout(function(){ tab.style.background=''; }, 800); }
+}
+
+// Listener para cuando el test y el panel están abiertos en el MISMO navegador/computadora
+window.addEventListener('storage', function(e){
+  if(e.key === 'ccp_ultimo_sync' && e.newValue && e.newValue !== _ultimoSyncVisto){
+    _ultimoSyncVisto = e.newValue;
+    importarDesdeLocalStorage();
+  }
+});
+
+// Polling cada 3 s — detecta cambios en la MISMA pestaña (mismo origen, mismo contexto)
+setInterval(function(){
+  try{
+    var ultimo = localStorage.getItem('ccp_ultimo_sync') || '';
+    if(ultimo && ultimo !== _ultimoSyncVisto){
+      _ultimoSyncVisto = ultimo;
+      importarDesdeLocalStorage();
+    }
+  }catch(e){}
+}, 3000);
+
+// Cargar al abrir el panel los que ya hayan completado el test antes
+setTimeout(function(){
+  var n = importarDesdeLocalStorage();
+  if(n > 0) console.log('[Panel] Cargados ' + n + ' participante(s) desde localStorage al iniciar');
+  _ultimoSyncVisto = (function(){ try{ return localStorage.getItem('ccp_ultimo_sync')||''; }catch(e){ return ''; } })();
+}, 400);
+
+// Init
+renderTabla();
+cargarConfig();
+actualizarFechaDisplay();
+</script>
+</body>
+</html>
