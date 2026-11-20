@@ -204,8 +204,6 @@ body{font-family:'Segoe UI','Calibri',sans-serif;background:#F5EED8;color:#2C1A0
     <div class="sb-item"><div class="sb-num" id="sn2">2</div><div class="sb-label">Test</div></div>
     <div class="sb-line" id="sl2"></div>
     <div class="sb-item"><div class="sb-num" id="sn3">3</div><div class="sb-label">Mi elemento</div></div>
-    <div class="sb-line" id="sl3"></div>
-    <div class="sb-item"><div class="sb-num" id="sn4">4</div><div class="sb-label">Autoevaluación</div></div>
   </div>
 
   <!-- PASO 1 -->
@@ -281,7 +279,6 @@ body{font-family:'Segoe UI','Calibri',sans-serif;background:#F5EED8;color:#2C1A0
       <div style="text-align:center;margin:14px 0 4px">
         <button class="btn-primary" style="font-size:16px;padding:14px 28px;display:block;width:100%;margin-bottom:10px" onclick="descargarJSON()">⬇ Descargar mi ficha (.json)</button>
         <p style="font-size:11px;color:#8B5E3C;margin-bottom:10px">Comparte este archivo con el facilitador para cargar tus resultados</p>
-        <button class="btn-secondary" onclick="irPaso(4)">Continuar → Autoevaluación</button>
       </div>
       <div class="frase-cierre">
         <strong id="frase-elemento">Eres Elemento Agua.</strong><br>
@@ -292,22 +289,6 @@ body{font-family:'Segoe UI','Calibri',sans-serif;background:#F5EED8;color:#2C1A0
     </div>
   </div>
 
-  <!-- PASO 4: AUTOEVALUACIÓN -->
-  <div id="paso4" class="hidden">
-    <div class="card">
-      <div class="card-title">☕ Autoevaluación del Barista del Ser</div>
-      <p style="font-size:13px;color:#5C3D1E;line-height:1.7;margin-bottom:18px">
-        Evalúa del <strong>1 al 5</strong> cada componente de tu liderazgo.<br>
-        <span style="color:#8B5E3C">1 = Necesito trabajar mucho este aspecto &nbsp;·&nbsp; 5 = Lo manejo muy bien</span>
-      </p>
-      <div id="eval-items"></div>
-      <div class="radar-wrap"><canvas id="radar-canvas" width="300" height="300"></canvas></div>
-      <div class="btn-row">
-        <button class="btn-secondary" onclick="irPaso(3)">← Volver</button>
-        <button class="btn-primary" onclick="finalizarEval()">Guardar y finalizar →</button>
-      </div>
-    </div>
-  </div>
 
 </div><!-- /app -->
 
@@ -625,16 +606,15 @@ function dibujarRadar(){
 
 // ── NAVEGAR ──────────────────────────────────────────────────
 function irPaso(n){
-  [1,2,3,4].forEach(function(p){
+  [1,2,3].forEach(function(p){
     document.getElementById('paso'+p).classList.toggle('hidden',p!==n);
   });
-  ['sn1','sn2','sn3','sn4'].forEach(function(id,i){
+  ['sn1','sn2','sn3'].forEach(function(id,i){
     document.getElementById(id).className='sb-num'+(i+1<n?' done':i+1===n?' active':'');
   });
-  ['sl1','sl2','sl3'].forEach(function(id,i){
+  ['sl1','sl2'].forEach(function(id,i){
     document.getElementById(id).className='sb-line'+(i+1<n?' done':'');
   });
-  if(n===4)setTimeout(dibujarRadar,100);
   window.scrollTo(0,0);
 }
 
